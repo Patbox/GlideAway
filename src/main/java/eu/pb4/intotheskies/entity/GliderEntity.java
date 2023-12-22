@@ -1,31 +1,34 @@
 package eu.pb4.intotheskies.entity;
 
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
+import eu.pb4.polymer.virtualentity.api.tracker.DisplayTrackedData;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MovementType;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
+import java.util.List;
+import java.util.Objects;
+
 public class GliderEntity extends Entity implements PolymerEntity {
-    public static boolean create(World world, BlockPos pos, double yOffset, Direction direction, Entity player) {
-        if (!world.getEntitiesByClass(GliderEntity.class, new Box(pos), x -> true).isEmpty()) {
+    public static boolean create(World world, Entity player, ItemStack stack) {
+        if (player.hasVehicle()) {
             return false;
         }
 
         var entity = new GliderEntity(SkiesEntities.GLIDER, world);
-        entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5 + yOffset, pos.getZ() + 0.5);
-        entity.setYaw(direction.asRotation());
+        var sitting = player.getDimensions(EntityPose.SITTING);
+        var currentDim = player.getDimensions(player.getPose());
+        entity.setPosition(player.getPos().add(0, currentDim.height - sitting.height, 0));
+        entity.setYaw(player.getYaw());
         world.spawnEntity(entity);
         player.startRiding(entity);
-        /*if (MathHelper.angleBetween(direction.asRotation(), player.getYaw()) > 90) {
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                serverPlayer.networkHandler.requestTeleport(player.getX(), player.getY(), player.getZ(), player.getYaw() - 180, 0,
-                        Set.of(PositionFlag.X, PositionFlag.Y, PositionFlag.Z, PositionFlag.X_ROT));
-            }
-            player.setYaw(player.getYaw() - 180);
-        }*/
 
         return true;
     }
@@ -42,14 +45,27 @@ public class GliderEntity extends Entity implements PolymerEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.hasPassengers()) {
+        if (!this.hasPassengers() || this.isOnGround()) {
             this.discard();
+            return;
         }
+
+        this.setYaw(Objects.requireNonNull(this.getFirstPassenger()).getYaw());
+        this.setPitch(Math.max(Objects.requireNonNull(this.getFirstPassenger()).getPitch(), 0));
+        this.setVelocity(Vec3d.fromPolar(this.getPitch(), this.getYaw()).multiply(0.5));
+        this.move(MovementType.SELF, this.getVelocity());
     }
 
     @Override
     public EntityType<?> getPolymerEntityType(ServerPlayerEntity player) {
-        return EntityType.BLOCK_DISPLAY;
+        return EntityType.ITEM_DISPLAY;
+    }
+
+    @Override
+    public void modifyRawTrackedData(List<DataTracker.SerializedEntry<?>> data, ServerPlayerEntity player, boolean initial) {
+        if (initial) {
+            data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.TELEPORTATION_DURATION, 3));
+        }
     }
 
     @Override

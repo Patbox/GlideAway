@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class SkiesItems {
+
+    public static final GliderItem GLIDER = register("glider", new GliderItem(new Item.Settings().maxCount(1)));
     private static <T extends Block & PolymerBlock, B> Map<B, Item> register(Map<B, T> blockMap) {
         var map = new HashMap<B, Item>();
         blockMap.forEach((a, b) -> map.put(a, register(b)));
@@ -30,10 +32,10 @@ public class SkiesItems {
 
     public static void register() {
         PolymerItemGroupUtils.registerPolymerItemGroup(new Identifier(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
-                //.icon(() -> BENCH.get(WoodType.OAK).getDefaultStack())
+                .icon(GLIDER::getDefaultStack)
                 .displayName(Text.translatable("itemgroup." + ModInit.ID))
                 .entries(((context, entries) -> {
-
+                    entries.add(GLIDER);
                 })).build()
         );
     }
