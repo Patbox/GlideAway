@@ -4,6 +4,7 @@
   "package": "eu.pb4.intotheskies.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LivingEntityMixin"
   ],
   "client": [
   ],

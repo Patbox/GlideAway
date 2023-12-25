@@ -7,8 +7,8 @@
         },
         {
             "type": "directory",
-            "source": "pb_models",
-            "prefix": "pb_models/"
+            "source": "pb_model",
+            "prefix": "pb_model/"
         }
     ]
 }

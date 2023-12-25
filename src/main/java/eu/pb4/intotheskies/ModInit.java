@@ -2,6 +2,7 @@ package eu.pb4.intotheskies;
 
 import eu.pb4.factorytools.impl.DebugData;
 
+import eu.pb4.intotheskies.entity.GliderEntity;
 import eu.pb4.intotheskies.entity.SkiesEntities;
 import eu.pb4.intotheskies.polydex.PolydexCompat;
 import eu.pb4.intotheskies.recipe.SkiesRecipeSerializers;
@@ -62,6 +63,6 @@ public class ModInit implements ModInitializer {
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private void initModels() {
-
+		GliderEntity.BASE_MODEL.isEmpty();
 	}
 }

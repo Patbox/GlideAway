@@ -16,6 +16,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ import java.util.function.Function;
 
 public class SkiesItems {
 
-    public static final GliderItem GLIDER = register("glider", new GliderItem(new Item.Settings().maxCount(1)));
+    public static final GliderItem GLIDER = register("glider", new GliderItem(new Item.Settings().maxDamage(200)));
     private static <T extends Block & PolymerBlock, B> Map<B, Item> register(Map<B, T> blockMap) {
         var map = new HashMap<B, Item>();
         blockMap.forEach((a, b) -> map.put(a, register(b)));
@@ -36,6 +37,14 @@ public class SkiesItems {
                 .displayName(Text.translatable("itemgroup." + ModInit.ID))
                 .entries(((context, entries) -> {
                     entries.add(GLIDER);
+                    for (var color : DyeColor.values()) {
+                        if (color != DyeColor.WHITE) {
+                            var glider = GLIDER.getDefaultStack();
+                            var c = color.getColorComponents();
+                            GLIDER.setColor(glider, MathHelper.packRgb(c[0], c[1], c[2]));
+                            entries.add(glider);
+                        }
+                    }
                 })).build()
         );
     }

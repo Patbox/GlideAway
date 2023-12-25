@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 public class SkiesEntities {
     public static final EntityType<GliderEntity> GLIDER
             = register("glider", FabricEntityTypeBuilder
-            .create().dimensions(EntityDimensions.fixed(0f, 0f)).entityFactory(GliderEntity::new).disableSaving().disableSummon());
+            .create().trackedUpdateRate(1).dimensions(EntityDimensions.fixed(0f, 0f)).entityFactory(GliderEntity::new).disableSummon());
 
     public static void register() {
 
