@@ -1,6 +1,6 @@
-# Into The Skies
+# Glide Away!
 
-## [== Download on Modrinth ==](https://modrinth.com/mod/intotheskies)
+## [== Download on Modrinth ==](https://modrinth.com/mod/glide-away)
 
 
 ## Extra mods you might want to use!

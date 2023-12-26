@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "intotheskies:item/glider",
-    "layer1": "intotheskies:item/glider_overlay"
-  }
-}
