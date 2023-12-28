@@ -1,3 +1,17 @@
 {
-
+  "item.hang_glider.opens": {
+    "sounds": [
+      "glideaway:hang_glider/open_1",
+      "glideaway:hang_glider/open_2",
+      "glideaway:hang_glider/open_3"
+    ],
+    "subtitle": "subtitle.glideaway.hang_glider_opens"
+  },
+  "generic.wind": {
+    "sounds": [
+      "glideaway:wind/1",
+      "glideaway:wind/2",
+      "glideaway:wind/3"
+    ]
+  }
 }

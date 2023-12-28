@@ -3,6 +3,7 @@ package eu.pb4.glideaway;
 
 import eu.pb4.glideaway.entity.GlideEntities;
 import eu.pb4.glideaway.item.GlideItems;
+import eu.pb4.glideaway.util.GlideGamerules;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -35,6 +36,7 @@ public class ModInit implements ModInitializer {
 
 		GlideItems.register();
 		GlideEntities.register();
+		GlideGamerules.register();
 
 		PolymerResourcePackUtils.addModAssets(ID);
 		PolymerResourcePackUtils.markAsRequired();

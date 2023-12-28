@@ -1,5 +1,7 @@
 package eu.pb4.glideaway.datagen;
 
+import eu.pb4.glideaway.item.GlideItemTags;
+import eu.pb4.glideaway.item.GlideItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.registry.RegistryWrapper;
@@ -14,6 +16,11 @@ class ItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
+        this.getOrCreateTagBuilder(GlideItemTags.HANG_GLIDERS)
+                .add(GlideItems.HANG_GLIDER)
+                .addOptionalTag(GlideItemTags.SPECIAL_HANG_GLIDERS);
 
+        this.getOrCreateTagBuilder(GlideItemTags.SPECIAL_HANG_GLIDERS)
+                .add(GlideItems.AZALEA_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER);
     }
 }

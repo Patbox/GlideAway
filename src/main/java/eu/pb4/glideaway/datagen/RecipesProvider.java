@@ -46,12 +46,11 @@ class RecipesProvider extends FabricRecipeProvider {
 
                 var nbt = new NbtCompound();
                 var display = new NbtCompound();
-                nbt.put(ItemStack.DISPLAY_KEY, display);
                 var c = dye.getColorComponents();
                 var color = MathHelper.packRgb(c[0], c[1], c[2]);
-
-
                 display.putInt(ItemStack.COLOR_KEY, color);
+                nbt.put(ItemStack.DISPLAY_KEY, display);
+
                 ((NbtRecipeBuilder) b).factorytools$setNbt(nbt);
             }
 

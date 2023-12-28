@@ -6,6 +6,8 @@ import eu.pb4.factorytools.api.item.MultiBlockItem;
 import eu.pb4.glideaway.ModInit;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.WoodType;
 import net.minecraft.item.BlockItem;
@@ -18,15 +20,22 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.village.TradeOffers;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static eu.pb4.glideaway.ModInit.id;
+
 public class GlideItems {
 
-    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(200)));
-    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(300), ParticleTypes.CHERRY_LEAVES));
+    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(2), true));
+    public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(1), false));
+    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(250)));
+    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.CHERRY_LEAVES));
+    public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.SCULK_CHARGE_POP));
+    public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.SPORE_BLOSSOM_AIR));
 
     public static void register() {
         PolymerItemGroupUtils.registerPolymerItemGroup(new Identifier(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
@@ -43,34 +52,29 @@ public class GlideItems {
                         }
                     }
                     entries.add(CHERRY_HANG_GLIDER);
+                    entries.add(SCULK_HANG_GLIDER);
+                    entries.add(AZALEA_HANG_GLIDER);
+
+                    entries.add(WIND_IN_A_BOTTLE);
+                    entries.add(INFINITE_WIND_IN_A_BOTTLE);
                 })).build()
         );
-    }
 
-    private static <T extends Item> Map<WoodType, T> registerWood(String id, Function<WoodType, T> object) {
-        var map = new HashMap<WoodType, T>();
+        UseEntityCallback.EVENT.register(WIND_IN_A_BOTTLE::useOnEntityEvent);
 
-        WoodType.stream().forEach(x -> {
-            var y = object.apply(x);
-            if (y != null) {
-                map.put(x, register(x.name() + "_" + id, y));
-            }
+        TradeOfferHelper.registerWanderingTraderOffers(2, (b) -> {
+            b.add(new TradeOffers.SellItemFactory(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5));
+            b.add(new TradeOffers.SellItemFactory(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5));
+            b.add(new TradeOffers.SellItemFactory(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5));
         });
 
-        return map;
-    }
-
-    private static <T extends Item> Map<DyeColor, T> registerDye(String id, Function<DyeColor, T> object) {
-        var map = new HashMap<DyeColor, T>();
-
-        for (var x : DyeColor.values()) {
-            var y = object.apply(x);
-            if (y != null) {
-                map.put(x, register(x.name() + "_" + id, y));
-            }
-        }
-
-        return map;
+        TradeOfferHelper.registerRebalancedWanderingTraderOffers((b) -> {
+            b.pool(id("hang_gliders"), 1,
+                    new TradeOffers.SellItemFactory(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5),
+                    new TradeOffers.SellItemFactory(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5),
+                    new TradeOffers.SellItemFactory(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5)
+            );
+        });
     }
 
     public static <T extends Item> T register(String path, T item) {

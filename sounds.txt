@@ -1,0 +1,8 @@
+Used sounds:
+# Cloth Flaps by Sauron974
+- hang_glider/open_(1/2/3).ogg
+> https://freesound.org/people/Sauron974/sounds/188733/
+
+# Wind_Howling_NIghttime.aif by Dynamicell
+- wind/(1/2/3).ogg
+> https://freesound.org/people/Dynamicell/sounds/17553/

@@ -1,5 +1,18 @@
 {
   "itemgroup.glideaway": "Glide Away!",
+  "item.glideaway.wind_in_a_bottle": "Wind in a Bottle",
+  "item.glideaway.infinite_wind_in_a_bottle": "Infinite Wind in a Bottle",
   "item.glideaway.hang_glider": "Hang Glider",
-  "item.glideaway.cherry_hang_glider": "Cherry Hang Glider"
+  "item.glideaway.cherry_hang_glider": "Cherry Hang Glider",
+  "item.glideaway.sculk_hang_glider": "Sculk Hang Glider",
+  "item.glideaway.azalea_hang_glider": "Azalea Hang Glider",
+
+  "gamerule.glideaway:pick_hang_glider": "Automatically pickup the Hang Glider when player leaves it",
+  "gamerule.glideaway:wind_sound": "Enables wind sounds while gliding",
+  "gamerule.glideaway:glideaway:allow_sneak_release": "Allows releasing Hang Glider by sneaking while still being on the ground",
+  "gamerule.glideaway:initial_velocity_glider_damage": "Damage Hang Glider based on initial player velocity",
+  "gamerule.glideaway:glideaway:fire_velocity_boost": "Boost in velocity caused by (Camp)fire",
+  "gamerule.glideaway:glideaway:lava_velocity_boost": "Boost in velocity caused by lava",
+
+  "subtitle.glideaway.hang_glider_opens": "Hang Glider opens"
 }

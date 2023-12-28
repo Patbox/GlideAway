@@ -4,9 +4,10 @@
   "version": "${version}",
 
   "name": "Glide Away!",
-  "description": "Get your Hang Glider and glide away from the dangers!",
+  "description": "Get your Hang Glider and glide away from the danger!",
   "authors": [
-    "Patbox"
+    "Patbox",
+    "Used Sounds: https://github.com/Patbox/GlideAway/blob/master/sounds.txt"
   ],
   "contact": {
     "homepage": "https://pb4.eu",

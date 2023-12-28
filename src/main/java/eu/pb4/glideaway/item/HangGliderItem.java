@@ -3,6 +3,7 @@ package eu.pb4.glideaway.item;
 import eu.pb4.factorytools.api.item.ModeledItem;
 import eu.pb4.glideaway.entity.GlideEntities;
 import eu.pb4.glideaway.entity.GliderEntity;
+import eu.pb4.glideaway.util.GlideSoundEvents;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.entity.Entity;
@@ -24,20 +25,7 @@ public class HangGliderItem extends ModeledItem {
 
         DispenserBlock.registerBehavior(this, new ItemDispenserBehavior() {
             public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
-                Direction direction = pointer.state().get(DispenserBlock.FACING);
-                ServerWorld serverWorld = pointer.world();
-                Vec3d vec3d = pointer.centerPos();
-
-                var entity = new GliderEntity(GlideEntities.GLIDER, serverWorld);
-                entity.setItemStack(stack.copyWithCount(1));
-                entity.setPosition(vec3d.x, vec3d.y - 0.5f, vec3d.z);
-                entity.setYaw(direction.getAxis() == Direction.Axis.Y ? 0 : direction.asRotation());
-                entity.setPitch(direction.getAxis() != Direction.Axis.Y ? 0 : (direction == Direction.UP ? -90 : 90));
-                entity.setVelocity(Vec3d.of(direction.getVector()).multiply(0.6));
-
-                serverWorld.spawnEntity(entity);
-                stack.decrement(1);
-                return stack;
+                return GliderEntity.createDispenser(pointer, stack);
             }
         });
     }
