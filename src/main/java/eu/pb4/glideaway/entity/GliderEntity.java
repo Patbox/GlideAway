@@ -2,6 +2,7 @@ package eu.pb4.glideaway.entity;
 
 import eu.pb4.glideaway.item.GlideItems;
 import eu.pb4.glideaway.item.HangGliderItem;
+import eu.pb4.glideaway.util.GlideDimensionTypeTags;
 import eu.pb4.glideaway.util.GlideGamerules;
 import eu.pb4.glideaway.util.GlideSoundEvents;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
@@ -183,7 +184,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
             return;
         }
 
-        if (entity instanceof LivingEntity livingEntity) {
+        if (entity instanceof LivingEntity livingEntity && entity.isAlive()) {
             if (livingEntity.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
                 livingEntity.setStackInHand(Hand.MAIN_HAND, this.getItemStack());
             } else if (livingEntity.getStackInHand(Hand.OFF_HAND).isEmpty()) {
@@ -206,6 +207,11 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
         super.tick();
         var passenger = this.getFirstPassenger();
+
+        if (passenger != null && !passenger.isAlive()) {
+            passenger.stopRiding();
+            passenger = null;
+        }
 
         if (passenger == null && this.holder.getAttachment() == null) {
             EntityAttachment.of(this.holder, this);
@@ -262,8 +268,10 @@ public class GliderEntity extends Entity implements PolymerEntity {
         double gravity = 0.07;
         if (serverWorld.hasRain(this.getBlockPos())) {
             gravity = 0.1;
-        } else if (serverWorld.getRegistryKey() == World.END) {
-            gravity = 0.082;
+        } else if (GlideDimensionTypeTags.isIn(serverWorld, GlideDimensionTypeTags.HIGH_GRAVITY)) {
+            gravity = 0.084;
+        } else if (GlideDimensionTypeTags.isIn(serverWorld, GlideDimensionTypeTags.LOW_GRAVITY)) {
+            gravity = 0.056;
         }
 
         this.limitFallDistance();
@@ -346,6 +354,15 @@ public class GliderEntity extends Entity implements PolymerEntity {
         player.startRiding(this);
 
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    protected void tickInVoid() {
+        if (GlideDimensionTypeTags.isIn(this.getWorld(), GlideDimensionTypeTags.VOID_PICKUP)) {
+            this.giveOrDrop(this.getFirstPassenger());
+        } else {
+            super.tickInVoid();
+        }
     }
 
     @Override
