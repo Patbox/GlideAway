@@ -19,6 +19,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
@@ -103,6 +104,9 @@ public class GliderEntity extends Entity implements PolymerEntity {
     public void setItemStack(ItemStack stack) {
         this.itemStack = stack;
         this.modelStack = stack.getItem().getDefaultStack();
+        if (stack.hasNbt() && stack.getItem() instanceof DyeableItem dyeableItem) {
+            dyeableItem.setColor(this.modelStack, dyeableItem.getColor(stack));
+        }
     }
 
     public GliderEntity(EntityType<?> type, World world) {
