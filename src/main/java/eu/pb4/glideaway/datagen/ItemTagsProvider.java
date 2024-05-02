@@ -5,6 +5,7 @@ import eu.pb4.glideaway.item.GlideItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.ItemTags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -22,5 +23,7 @@ class ItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
         this.getOrCreateTagBuilder(GlideItemTags.SPECIAL_HANG_GLIDERS)
                 .add(GlideItems.AZALEA_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER);
+
+        this.getOrCreateTagBuilder(ItemTags.DYEABLE).add(GlideItems.HANG_GLIDER);
     }
 }

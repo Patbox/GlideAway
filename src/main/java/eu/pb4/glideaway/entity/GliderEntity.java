@@ -13,13 +13,13 @@ import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.tracker.DisplayTrackedData;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
@@ -29,7 +29,6 @@ import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
@@ -51,15 +50,20 @@ public class GliderEntity extends Entity implements PolymerEntity {
     private final ElementHolder holder = new ElementHolder();
     private int soundTimer;
     private int attacks;
+    private boolean noDamage = false;
 
     public static boolean create(World world, LivingEntity rider, ItemStack stack, Hand hand) {
         if (rider.hasVehicle() || (rider.isSneaking() && !world.getGameRules().getBoolean(GlideGamerules.ALLOW_SNEAK_RELEASE))) {
             return false;
         }
-        stack.damage((int) Math.max(0, -rider.getVelocity().y
-                * world.getGameRules().get(GlideGamerules.INITIAL_VELOCITY_GLIDER_DAMAGE).get()
-                * (90 - Math.abs(MathHelper.clamp(rider.getPitch(), -30, 80))) / 90),
-                rider, player -> player.sendEquipmentBreakStatus(hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+        var noDamage = rider instanceof PlayerEntity player && player.isCreative();
+
+        if (!noDamage) {
+            stack.damage((int) Math.max(0, -rider.getVelocity().y
+                            * world.getGameRules().get(GlideGamerules.INITIAL_VELOCITY_GLIDER_DAMAGE).get()
+                            * (90 - Math.abs(MathHelper.clamp(rider.getPitch(), -30, 80))) / 90),
+                    rider, hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        }
 
         if (stack.isEmpty()) {
             return false;
@@ -69,11 +73,11 @@ public class GliderEntity extends Entity implements PolymerEntity {
         var sitting = rider.getDimensions(EntityPose.SITTING);
         var currentDim = rider.getDimensions(rider.getPose());
         entity.setItemStack(stack);
-        entity.setPosition(rider.getPos().add(0, currentDim.height - sitting.height - rider.getRidingOffset(entity), 0));
+        entity.setPosition(rider.getPos().add(0, currentDim.height() - sitting.height(), 0));
         entity.setYaw(rider.getYaw());
         entity.setPitch(rider.getPitch());
         entity.setVelocity(rider.getVelocity().add(rider.getRotationVector().multiply(0.2, 0.02, 0.2).multiply(rider.isSneaking() ? 2 : 1)));
-
+        entity.noDamage = noDamage;
         world.spawnEntity(entity);
         entity.playSound(GlideSoundEvents.HANG_GLIDER_OPENS, 0.8f, entity.random.nextFloat() * 0.2f + 1.2f);
 
@@ -104,9 +108,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     public void setItemStack(ItemStack stack) {
         this.itemStack = stack;
         this.modelStack = stack.getItem().getDefaultStack();
-        if (stack.hasNbt() && stack.getItem() instanceof DyeableItem dyeableItem) {
-            dyeableItem.setColor(this.modelStack, dyeableItem.getColor(stack));
-        }
+        this.modelStack.set(DataComponentTypes.DYED_COLOR, stack.get(DataComponentTypes.DYED_COLOR));
     }
 
     public GliderEntity(EntityType<?> type, World world) {
@@ -148,9 +150,13 @@ public class GliderEntity extends Entity implements PolymerEntity {
         return super.damage(source, amount);
     }
 
-    private boolean damageStack(int i) {
+    private void damageStack(int i) {
+        if (this.noDamage) {
+            return;
+        }
+
         var serverWorld = (ServerWorld) this.getWorld();
-        if (itemStack.damage(i, this.random, null)) {
+        itemStack.damage(i, this.random, null, () -> {
             var old = this.itemStack;
             this.setItemStack(ItemStack.EMPTY);
             if (this.getFirstPassenger() != null) {
@@ -158,9 +164,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
             }
             serverWorld.spawnParticles(new ItemStackParticleEffect(ParticleTypes.ITEM, old), this.getX(), this.getY() + 0.5, this.getZ(), 80, 1, 1, 1, 0.1);
             this.discard();
-            return true;
-        }
-        return false;
+        });
     }
 
     @Override
@@ -169,8 +173,8 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     @Override
-    protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
-        return new Vector3f();
+    protected Vec3d getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
+        return Vec3d.ZERO;
     }
 
     @Override
@@ -385,7 +389,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         }
 
         for (var entry : data.toArray(new DataTracker.SerializedEntry<?>[0])) {
-            if (entry.id() == ROLL.getId()) {
+            if (entry.id() == ROLL.id()) {
                 data.remove(entry);
                 data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.LEFT_ROTATION, new Quaternionf().rotateZ((Float) entry.value())));
                 data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.START_INTERPOLATION, 0));
@@ -393,19 +397,22 @@ public class GliderEntity extends Entity implements PolymerEntity {
         }
     }
 
+
     @Override
-    protected void initDataTracker() {
-        this.dataTracker.startTracking(ROLL, 0f);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        builder.add(ROLL, 0f);
     }
 
     @Override
     protected void readCustomDataFromNbt(NbtCompound nbt) {
-        setItemStack(ItemStack.fromNbt(nbt.getCompound("stack")));
+        setItemStack(ItemStack.fromNbtOrEmpty(this.getRegistryManager(), nbt.getCompound("stack")));
+        this.noDamage = nbt.getBoolean("no_damage");
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.put("stack", this.itemStack.writeNbt(new NbtCompound()));
+        nbt.put("stack", this.itemStack.encode(this.getRegistryManager()));
+        nbt.putBoolean("no_damage", this.noDamage);
     }
 
     public ItemStack getItemStack() {

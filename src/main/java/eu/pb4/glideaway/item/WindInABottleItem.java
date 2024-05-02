@@ -3,8 +3,9 @@ package eu.pb4.glideaway.item;
 import eu.pb4.factorytools.api.item.ModeledItem;
 import eu.pb4.glideaway.entity.GliderEntity;
 import eu.pb4.glideaway.mixin.ServerPlayNetworkHandlerAccessor;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.SmallFireballEntity;
@@ -12,7 +13,6 @@ import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -52,7 +52,7 @@ public class WindInABottleItem extends ModeledItem {
             user.getInventory().offerOrDrop(new ItemStack(this));
             windChargeEntity.discard();
             return ActionResult.SUCCESS;
-        } else if (!world.isClient && !hasWindCharge && entity instanceof SmallFireballEntity fireballEntity && stack.isOf(Items.POTION) && PotionUtil.getPotion(stack) == Potions.EMPTY) {
+        } else if (!world.isClient && !hasWindCharge && entity instanceof SmallFireballEntity fireballEntity && stack.isOf(Items.POTION) && stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT) == PotionContentsComponent.DEFAULT) {
             world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
             world.emitGameEvent(user, GameEvent.FLUID_PICKUP, user.getPos());
             if (user instanceof ServerPlayerEntity serverPlayerEntity) {
@@ -89,8 +89,8 @@ public class WindInABottleItem extends ModeledItem {
         user.getItemCooldownManager().set(this, 20);
 
         if (world instanceof ServerWorld serverWorld) {
-            serverWorld.spawnParticles(ParticleTypes.GUST_EMITTER, user.getX(), user.getY(), user.getZ(), 0, 0, 0, 0, 0);
-            serverWorld.playSoundFromEntity(null, user, SoundEvents.ENTITY_GENERIC_WIND_BURST, SoundCategory.PLAYERS, 0.5f, 0);
+            serverWorld.spawnParticles(ParticleTypes.GUST_EMITTER_SMALL, user.getX(), user.getY(), user.getZ(), 0, 0, 0, 0, 0);
+            serverWorld.playSoundFromEntity(null, user, SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST.value(), SoundCategory.PLAYERS, 0.5f, 0);
         }
 
         if (this.consume && !user.isCreative()) {

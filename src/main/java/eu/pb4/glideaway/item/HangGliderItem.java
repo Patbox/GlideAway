@@ -1,5 +1,6 @@
 package eu.pb4.glideaway.item;
 
+import eu.pb4.factorytools.api.advancement.TriggerCriterion;
 import eu.pb4.factorytools.api.item.ModeledItem;
 import eu.pb4.glideaway.entity.GlideEntities;
 import eu.pb4.glideaway.entity.GliderEntity;
@@ -11,15 +12,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import static eu.pb4.glideaway.ModInit.id;
+
 public class HangGliderItem extends ModeledItem {
+    public static final Identifier USE_TRIGGER = id("on_use");
+
     public HangGliderItem(Item item, Settings settings) {
         super(item, settings);
 
@@ -40,6 +47,9 @@ public class HangGliderItem extends ModeledItem {
         var stack = user.getStackInHand(hand);
         if (GliderEntity.create(world, user, stack, hand)) {
             user.setStackInHand(hand, ItemStack.EMPTY);
+            if (user instanceof ServerPlayerEntity player) {
+                TriggerCriterion.trigger(player, USE_TRIGGER);
+            }
             return TypedActionResult.success(stack);
         }
 

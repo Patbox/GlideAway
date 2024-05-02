@@ -14,5 +14,8 @@
   "gamerule.glideaway:glideaway:fire_velocity_boost": "Boost in velocity caused by (Camp)fire",
   "gamerule.glideaway:glideaway:lava_velocity_boost": "Boost in velocity caused by lava",
 
-  "subtitle.glideaway.hang_glider_opens": "Hang Glider opens"
+  "subtitle.glideaway.hang_glider_opens": "Hang Glider opens",
+
+  "advancements.glideaway.into_the_skies.title": "Into The Skies!",
+  "advancements.glideaway.into_the_skies.description": "Use the Hang Glider for the first time!"
 }

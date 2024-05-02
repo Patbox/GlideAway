@@ -1,35 +1,45 @@
 package eu.pb4.glideaway.datagen;
 
+import eu.pb4.factorytools.api.advancement.TriggerCriterion;
+import eu.pb4.glideaway.entity.GliderEntity;
+import eu.pb4.glideaway.item.GlideItems;
+import eu.pb4.glideaway.item.HangGliderItem;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
+import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.advancement.AdvancementFrame;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 
 class AdvancementsProvider extends FabricAdvancementProvider {
 
-    protected AdvancementsProvider(FabricDataOutput output) {
-        super(output);
+    protected AdvancementsProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
-    public void generateAdvancement(Consumer<AdvancementEntry> exporter) {
-        /*var root = Advancement.Builder.create()
+    public void generateAdvancement(RegistryWrapper.WrapperLookup registryLookup, Consumer<AdvancementEntry> exporter) {
+        //noinspection removal
+        var root = Advancement.Builder.create()
                 .display(
-                        FactoryItems.WINDMILL_SAIL,
-                        Text.translatable("advancements.polyfactory.root.title"),
-                        Text.translatable("advancements.polyfactory.root.description"),
-                        id("textures/advancements/background.png"),
+                        GlideItems.HANG_GLIDER,
+                        Text.translatable("advancements.glideaway.into_the_skies.title"),
+                        Text.translatable("advancements.glideaway.into_the_skies.description"),
+                        null,
                         AdvancementFrame.TASK,
-                        false,
-                        false,
+                        true,
+                        true,
                         false
                 )
-                .criterion("any_item", InventoryChangedCriterion.Conditions.items(
-                        ItemPredicate.Builder.create().tag(FactoryItemTags.ROOT_ADVANCEMENT)
-                ))
-                .build(exporter, "polyfactory:main/root");
-*/
+                .parent(new Identifier("adventure/root"))
+                .criterion("any_item", TriggerCriterion.of(HangGliderItem.USE_TRIGGER))
+                .build(exporter, "glideaway:into_the_skies");
+
     }
 }

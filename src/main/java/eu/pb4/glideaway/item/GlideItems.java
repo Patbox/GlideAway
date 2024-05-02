@@ -9,6 +9,8 @@ import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.block.Block;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -25,7 +27,7 @@ import static eu.pb4.glideaway.ModInit.id;
 
 public class GlideItems {
 
-    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(2), true));
+    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(8), true));
     public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(1), false));
     public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(250)));
     public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.CHERRY_LEAVES));
@@ -42,7 +44,7 @@ public class GlideItems {
                         if (color != DyeColor.WHITE) {
                             var glider = HANG_GLIDER.getDefaultStack();
                             var c = color.getColorComponents();
-                            HANG_GLIDER.setColor(glider, MathHelper.packRgb(c[0], c[1], c[2]));
+                            glider.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(MathHelper.packRgb(c[0], c[1], c[2]), true));
                             entries.add(glider);
                         }
                     }
