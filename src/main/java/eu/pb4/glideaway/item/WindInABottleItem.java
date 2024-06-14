@@ -38,9 +38,8 @@ public class WindInABottleItem extends ModeledItem {
 
     public ActionResult useOnEntityEvent(PlayerEntity user, World world, Hand hand, Entity entity, EntityHitResult result) {
         var stack = user.getStackInHand(hand);
-        var hasWindCharge = world.getEnabledFeatures().contains(FeatureFlags.UPDATE_1_21);
 
-        if (!world.isClient && hasWindCharge && entity instanceof WindChargeEntity windChargeEntity && stack.isOf(Items.GLASS_BOTTLE)) {
+        if (!world.isClient && entity instanceof WindChargeEntity windChargeEntity && stack.isOf(Items.GLASS_BOTTLE)) {
             world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
             world.emitGameEvent(user, GameEvent.FLUID_PICKUP, user.getPos());
             if (user instanceof ServerPlayerEntity serverPlayerEntity) {
@@ -51,18 +50,6 @@ public class WindInABottleItem extends ModeledItem {
             stack.decrement(1);
             user.getInventory().offerOrDrop(new ItemStack(this));
             windChargeEntity.discard();
-            return ActionResult.SUCCESS;
-        } else if (!world.isClient && !hasWindCharge && entity instanceof SmallFireballEntity fireballEntity && stack.isOf(Items.POTION) && stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT) == PotionContentsComponent.DEFAULT) {
-            world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
-            world.emitGameEvent(user, GameEvent.FLUID_PICKUP, user.getPos());
-            if (user instanceof ServerPlayerEntity serverPlayerEntity) {
-                Criteria.PLAYER_INTERACTED_WITH_ENTITY.trigger(serverPlayerEntity, stack, fireballEntity);
-                serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-            }
-
-            stack.decrement(1);
-            user.getInventory().offerOrDrop(new ItemStack(this));
-            fireballEntity.discard();
             return ActionResult.SUCCESS;
         }
 

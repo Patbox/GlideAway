@@ -37,7 +37,7 @@ class AdvancementsProvider extends FabricAdvancementProvider {
                         true,
                         false
                 )
-                .parent(new Identifier("adventure/root"))
+                .parent(Identifier.ofVanilla("adventure/root"))
                 .criterion("any_item", TriggerCriterion.of(HangGliderItem.USE_TRIGGER))
                 .build(exporter, "glideaway:into_the_skies");
 

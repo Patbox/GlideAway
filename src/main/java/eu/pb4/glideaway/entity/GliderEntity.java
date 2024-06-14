@@ -14,12 +14,15 @@ import eu.pb4.polymer.virtualentity.api.tracker.DisplayTrackedData;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.EnchantmentEffectComponentTypes;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
@@ -156,7 +159,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         }
 
         var serverWorld = (ServerWorld) this.getWorld();
-        itemStack.damage(i, this.random, null, () -> {
+        itemStack.damage(i, serverWorld, null, (item) -> {
             var old = this.itemStack;
             this.setItemStack(ItemStack.EMPTY);
             if (this.getFirstPassenger() != null) {
@@ -417,5 +420,9 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     public ItemStack getItemStack() {
         return this.itemStack;
+    }
+
+    public boolean hasCurseOfBinding() {
+        return EnchantmentHelper.hasAnyEnchantmentsWith(this.itemStack, EnchantmentEffectComponentTypes.PREVENT_EQUIPMENT_DROP);
     }
 }

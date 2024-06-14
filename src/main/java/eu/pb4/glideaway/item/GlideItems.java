@@ -35,7 +35,7 @@ public class GlideItems {
     public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.SPORE_BLOSSOM_AIR));
 
     public static void register() {
-        PolymerItemGroupUtils.registerPolymerItemGroup(new Identifier(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
                 .icon(HANG_GLIDER::getDefaultStack)
                 .displayName(Text.translatable("itemgroup." + ModInit.ID))
                 .entries(((context, entries) -> {
@@ -43,8 +43,7 @@ public class GlideItems {
                     for (var color : DyeColor.values()) {
                         if (color != DyeColor.WHITE) {
                             var glider = HANG_GLIDER.getDefaultStack();
-                            var c = color.getColorComponents();
-                            glider.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(MathHelper.packRgb(c[0], c[1], c[2]), true));
+                            glider.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color.getEntityColor(), true));
                             entries.add(glider);
                         }
                     }
@@ -75,7 +74,7 @@ public class GlideItems {
     }
 
     public static <T extends Item> T register(String path, T item) {
-        Registry.register(Registries.ITEM, new Identifier(ModInit.ID, path), item);
+        Registry.register(Registries.ITEM, Identifier.of(ModInit.ID, path), item);
         return item;
     }
 

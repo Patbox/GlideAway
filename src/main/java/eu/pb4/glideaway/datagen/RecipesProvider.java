@@ -39,9 +39,8 @@ class RecipesProvider extends FabricRecipeProvider {
                 .offerTo(exporter);
 
         for (var dye : DyeColor.values()) {
-            var wool = Registries.ITEM.get(new Identifier(dye.asString() + "_wool"));
-            var c = dye.getColorComponents();
-            var color = MathHelper.packRgb(c[0], c[1], c[2]);
+            var wool = Registries.ITEM.get(Identifier.ofVanilla(dye.asString() + "_wool"));
+            var color = dye.getEntityColor();
 
             var b = new CompShapedRecipeJsonBuilder(RecipeCategory.TOOLS, GlideItems.HANG_GLIDER, 1)
                     .setComponent(DataComponentTypes.DYED_COLOR, dye != DyeColor.WHITE ? new DyedColorComponent(color, true) : null)
