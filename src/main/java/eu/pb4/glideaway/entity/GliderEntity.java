@@ -161,6 +161,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         var serverWorld = (ServerWorld) this.getWorld();
         itemStack.damage(i, serverWorld, null, (item) -> {
             var old = this.itemStack;
+            old.increment(1);
             this.setItemStack(ItemStack.EMPTY);
             if (this.getFirstPassenger() != null) {
                 this.getFirstPassenger().stopRiding();
@@ -414,7 +415,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.put("stack", this.itemStack.encode(this.getRegistryManager()));
+        nbt.put("stack", this.itemStack.encodeAllowEmpty(this.getRegistryManager()));
         nbt.putBoolean("no_damage", this.noDamage);
     }
 
