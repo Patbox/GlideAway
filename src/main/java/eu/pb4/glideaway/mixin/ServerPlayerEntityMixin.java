@@ -20,7 +20,6 @@ public abstract class ServerPlayerEntityMixin {
     private void gliderRidingMotionStat(double deltaX, double deltaY, double deltaZ, CallbackInfo ci) {
         Entity entity = ((EntityAccessor) this).invokeGetVehicle();
         if (entity instanceof GliderEntity) {
-            System.out.println("Hey you're riding a glider");
             this.increaseStat(Stats.CUSTOM.getOrCreateStat(ModInit.GLIDE_ONE_CM), 1);
         }
     }
