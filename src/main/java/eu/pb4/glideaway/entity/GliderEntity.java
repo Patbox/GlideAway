@@ -54,6 +54,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     private int soundTimer;
     private int attacks;
     private boolean noDamage = false;
+    private boolean hasLanded = false;
 
     public static boolean create(World world, LivingEntity rider, ItemStack stack, Hand hand) {
         if (rider.hasVehicle() || (rider.isSneaking() && !world.getGameRules().getBoolean(GlideGamerules.ALLOW_SNEAK_RELEASE))) {
@@ -153,7 +154,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         return super.damage(source, amount);
     }
 
-    private void damageStack(int i) {
+    public void damageStack(int i) {
         if (this.noDamage) {
             return;
         }
@@ -234,6 +235,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         }
 
         if ((this.isOnGround() || (passenger != null && passenger.isOnGround())) && this.age > 10) {
+            this.hasLanded = true;
             this.giveOrDrop(passenger);
             return;
         }
@@ -277,9 +279,9 @@ public class GliderEntity extends Entity implements PolymerEntity {
         }
 
 
-        double gravity = 0.07;
+        double gravity = 0.068;
         if (serverWorld.hasRain(this.getBlockPos())) {
-            gravity = 0.1;
+            gravity = 0.09;
         } else if (GlideDimensionTypeTags.isIn(serverWorld, GlideDimensionTypeTags.HIGH_GRAVITY)) {
             gravity = 0.084;
         } else if (GlideDimensionTypeTags.isIn(serverWorld, GlideDimensionTypeTags.LOW_GRAVITY)) {
@@ -424,6 +426,10 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     public boolean hasCurseOfBinding() {
-        return EnchantmentHelper.hasAnyEnchantmentsWith(this.itemStack, EnchantmentEffectComponentTypes.PREVENT_EQUIPMENT_DROP);
+        return EnchantmentHelper.hasAnyEnchantmentsWith(this.itemStack, EnchantmentEffectComponentTypes.PREVENT_ARMOR_CHANGE);
+    }
+
+    public boolean hasLanded() {
+        return this.hasLanded || this.isRemoved();
     }
 }

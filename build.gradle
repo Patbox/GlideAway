@@ -15,6 +15,7 @@ plugins {
 	id 'fabric-loom' version '1.6.+'
 	id "com.modrinth.minotaur" version "2.+"
 	id 'maven-publish'
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 apply plugin: 'de.guntram.mcmod.crowdin-translate'
@@ -91,12 +92,12 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation 'eu.pb4:polymer-core:0.9.0+1.21-rc1'
-	modImplementation 'eu.pb4:polymer-resource-pack:0.9.0+1.21-rc1'
-	modImplementation 'eu.pb4:polymer-autohost:0.9.0+1.21-rc1'
-	modImplementation 'eu.pb4:polymer-virtual-entity:0.9.0+1.21-rc1'
+	modImplementation 'eu.pb4:polymer-core:0.9.8+1.21'
+	modImplementation 'eu.pb4:polymer-resource-pack:0.9.8+1.21'
+	modImplementation 'eu.pb4:polymer-autohost:0.9.8+1.21'
+	modImplementation 'eu.pb4:polymer-virtual-entity:0.9.8+1.21'
 	modImplementation include('eu.pb4:common-protection-api:1.0.0')
-	modImplementation include('eu.pb4:factorytools:0.3.0+1.21')
+	modImplementation include('eu.pb4:factorytools:0.3.1+1.21')
 
 	// Temp hack to allow development
 	//modImplementation include('com.kneelawk:graphlib:1.99.99+1.20.local')
@@ -171,5 +172,37 @@ if (System.getenv("MODRINTH")) {
 
 	remapJar {
 		finalizedBy project.tasks.modrinth
+	}
+}
+
+curseforge {
+	if (System.getenv("CURSEFORGE")) {
+		apiKey = System.getenv("CURSEFORGE")
+
+		project {
+			id = "1073545"
+			releaseType = "release"
+			changelog = System.getenv("CHANGELOG")
+			changelogType = "markdown"
+			addGameVersion((project.minecraft_version.contains("-") ? ((String) project.minecraft_version.split("-")[0] + "-Snapshot") : project.minecraft_version))
+			addGameVersion "Fabric"
+			addGameVersion "Quilt"
+			mainArtifact(remapJar)
+
+			relations {
+				requiredDependency "polymer"
+			}
+
+			afterEvaluate {
+				uploadTask.dependsOn("remapJar")
+			}
+		}
+	}
+
+	options {
+		forgeGradleIntegration = false
+	}
+	remapJar {
+		finalizedBy project.tasks.curseforge
 	}
 }

@@ -34,6 +34,7 @@ jobs:
         run: ./gradlew downloadTranslations build publish
         env:
           MODRINTH: ${{ secrets.MODRINTH }}
+          CURSEFORGE: ${{ secrets.CURSEFORGE }}
           CHANGELOG: ${{ github.event.release.body }}
           RELEASE: true
       - name: Upload GitHub release

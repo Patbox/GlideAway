@@ -29,10 +29,10 @@ public class GlideItems {
 
     public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(8), true));
     public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(1), false));
-    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(250)));
-    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.CHERRY_LEAVES));
-    public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.SCULK_CHARGE_POP));
-    public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(350), ParticleTypes.SPORE_BLOSSOM_AIR));
+    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(300)));
+    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.CHERRY_LEAVES));
+    public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.SCULK_CHARGE_POP));
+    public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.SPORE_BLOSSOM_AIR));
 
     public static void register() {
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)

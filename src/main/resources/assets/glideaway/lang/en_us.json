@@ -13,6 +13,7 @@
   "gamerule.glideaway:initial_velocity_glider_damage": "Damage Hang Glider based on initial player velocity",
   "gamerule.glideaway:glideaway:fire_velocity_boost": "Boost in velocity caused by (Camp)fire",
   "gamerule.glideaway:glideaway:lava_velocity_boost": "Boost in velocity caused by lava",
+  "gamerule.glideaway:glideaway:allow_firework_boost": "Allows using fireworks to boost the glider",
 
   "subtitle.glideaway.hang_glider_opens": "Hang Glider opens",
 

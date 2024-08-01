@@ -14,15 +14,16 @@ public class GlideGamerules {
 
     public static final GameRules.Key<GameRules.BooleanRule> ALLOW_SNEAK_RELEASE = GameRuleRegistry.register("glideaway:allow_sneak_release", GameRules.Category.MISC,
             GameRuleFactory.createBooleanRule(true));
-
+    public static final GameRules.Key<GameRules.BooleanRule> ALLOW_FIREWORK_BOOST = GameRuleRegistry.register("glideaway:allow_firework_boost", GameRules.Category.MISC,
+            GameRuleFactory.createBooleanRule(false));
 
     public static final GameRules.Key<DoubleRule> INITIAL_VELOCITY_GLIDER_DAMAGE = GameRuleRegistry.register("glideaway:initial_velocity_glider_damage", GameRules.Category.MISC,
             GameRuleFactory.createDoubleRule(50, 0));
 
     public static final GameRules.Key<DoubleRule> FIRE_BOOST = GameRuleRegistry.register("glideaway:fire_velocity_boost", GameRules.Category.MISC,
-            GameRuleFactory.createDoubleRule(0.04, 0, 1));
+            GameRuleFactory.createDoubleRule(0.06, 0, 1));
 
     public static final GameRules.Key<DoubleRule> LAVA_BOOST = GameRuleRegistry.register("glideaway:lava_velocity_boost", GameRules.Category.MISC,
-            GameRuleFactory.createDoubleRule(0.01, 0, 1));
+            GameRuleFactory.createDoubleRule(0.02, 0, 1));
     public static void register() {}
 }

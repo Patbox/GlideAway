@@ -1,0 +1,5 @@
+- Hang Gliders are now enchantable!
+- Changed durability of dyable/regular Hand Gliders to 300 (from 250).
+- Changed durability of Special Hand Gliders to 350 (from 400).
+- Added gamerule to enable firework boosting for gliders. It's disabled by default.
+- Added statistic about distance traveled with the glider (@malloryhayr)

@@ -5,9 +5,11 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "EntityAccessor",
+    "FireworkRocketEntityMixin",
+    "FireworkRocketItemMixin",
     "LivingEntityMixin",
-    "ServerPlayNetworkHandlerAccessor",
     "ServerPlayerEntityMixin",
+    "ServerPlayNetworkHandlerAccessor",
     "ShapedRecipeAccessor",
     "datafixer.Schema1460Mixin"
   ],

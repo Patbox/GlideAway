@@ -56,5 +56,10 @@ public class HangGliderItem extends ModeledItem {
         return super.use(world, user, hand);
     }
 
+    @Override
+    public int getEnchantability() {
+        return 8;
+    }
+
     public void tickGlider(ServerWorld world, GliderEntity entity, Entity passenger, ItemStack itemStack) {}
 }

@@ -25,5 +25,14 @@ class ItemTagsProvider extends FabricTagProvider.ItemTagProvider {
                 .add(GlideItems.AZALEA_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER);
 
         this.getOrCreateTagBuilder(ItemTags.DYEABLE).add(GlideItems.HANG_GLIDER);
+
+        this.getOrCreateTagBuilder(ItemTags.DURABILITY_ENCHANTABLE)
+                .addTag(GlideItemTags.HANG_GLIDERS);
+        this.getOrCreateTagBuilder(ItemTags.VANISHING_ENCHANTABLE)
+                .addTag(GlideItemTags.HANG_GLIDERS);
+        this.getOrCreateTagBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE)
+                .addTag(GlideItemTags.HANG_GLIDERS);
+        this.getOrCreateTagBuilder(GlideItemTags.GLIDER_ENCHANTABLE)
+                .addTag(GlideItemTags.HANG_GLIDERS);
     }
 }

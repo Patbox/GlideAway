@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DyeableHangGliderItem extends HangGliderItem {
     public DyeableHangGliderItem(Settings settings) {
-        super(Items.LEATHER_LEGGINGS, settings);
+        super(Items.WOLF_ARMOR, settings);
     }
 
     public int getColor(ItemStack stack) {
