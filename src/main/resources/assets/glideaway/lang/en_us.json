@@ -17,5 +17,7 @@
   "subtitle.glideaway.hang_glider_opens": "Hang Glider opens",
 
   "advancements.glideaway.into_the_skies.title": "Into The Skies!",
-  "advancements.glideaway.into_the_skies.description": "Use the Hang Glider for the first time!"
+  "advancements.glideaway.into_the_skies.description": "Use the Hang Glider for the first time!",
+
+  "stat.glideway.glide_one_cm": "Distance by Glider"
 }

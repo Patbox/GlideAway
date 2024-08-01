@@ -4,8 +4,10 @@
   "package": "eu.pb4.glideaway.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "EntityAccessor",
     "LivingEntityMixin",
     "ServerPlayNetworkHandlerAccessor",
+    "ServerPlayerEntityMixin",
     "ShapedRecipeAccessor",
     "datafixer.Schema1460Mixin"
   ],
