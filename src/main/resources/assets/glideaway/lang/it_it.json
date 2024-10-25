@@ -1,0 +1,16 @@
+{
+  "itemgroup.glideaway": "Glide Away!",
+  "item.glideaway.wind_in_a_bottle": "Vento in Bottiglia",
+  "item.glideaway.infinite_wind_in_a_bottle": "Vento in Bottiglia Infinito",
+  "item.glideaway.hang_glider": "Deltaplano",
+  "item.glideaway.cherry_hang_glider": "Deltaplano di Ciliegio",
+  "item.glideaway.sculk_hang_glider": "Deltaplano di Sculk",
+  "item.glideaway.azalea_hang_glider": "Deltaplano di Azalea",
+  "gamerule.glideaway:pick_hang_glider": "Prendi automaticamente il Deltaplano quando il giocatore lo lascia",
+  "gamerule.glideaway:wind_sound": "Abilita il suono del vento in volo",
+  "gamerule.glideaway:glideaway:allow_sneak_release": "Permette di rilasciare il Deltaplano accovacciandosi mentre si è ancora a terra",
+  "gamerule.glideaway:initial_velocity_glider_damage": "Danneggia il deltaplano in base alla velocità iniziale del giocatore",
+  "gamerule.glideaway:glideaway:fire_velocity_boost": "Aumento della velocità causato dal fuoco (da campo)",
+  "gamerule.glideaway:glideaway:lava_velocity_boost": "Aumento della velocità causato dalla lava",
+  "subtitle.glideaway.hang_glider_opens": "Deltaplano si apre"
+}
