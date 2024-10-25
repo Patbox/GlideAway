@@ -1,0 +1,20 @@
+{
+  "itemgroup.glideaway": "Glide Away! 滑翔吧！",
+  "item.glideaway.wind_in_a_bottle": "瓶裝風",
+  "item.glideaway.infinite_wind_in_a_bottle": "無限瓶裝風",
+  "item.glideaway.hang_glider": "滑翔翼",
+  "item.glideaway.cherry_hang_glider": "櫻花滑翔翼",
+  "item.glideaway.sculk_hang_glider": "伏聆滑翔翼",
+  "item.glideaway.azalea_hang_glider": "杜鵑花滑翔翼",
+  "gamerule.glideaway:pick_hang_glider": "玩家離開滑翔翼時自動撿起它",
+  "gamerule.glideaway:wind_sound": "滑翔時啟用風聲",
+  "gamerule.glideaway:glideaway:allow_sneak_release": "允許玩家在地面上潛行時釋放滑翔翼",
+  "gamerule.glideaway:initial_velocity_glider_damage": "根據玩家初始速度損壞滑翔翼",
+  "gamerule.glideaway:glideaway:fire_velocity_boost": "（營火）火焰造成的速度提升",
+  "gamerule.glideaway:glideaway:lava_velocity_boost": "熔岩造成的速度提升",
+  "gamerule.glideaway:glideaway:allow_firework_boost": "允許使用煙火加速滑翔翼",
+  "subtitle.glideaway.hang_glider_opens": "滑翔翼打開",
+  "advancements.glideaway.into_the_skies.title": "飛向天空！",
+  "advancements.glideaway.into_the_skies.description": "第一次使用滑翔翼！",
+  "stat.glideway.glide_one_cm": "滑翔距離"
+}

@@ -1,0 +1,18 @@
+{
+  "itemgroup.glideaway": "Glide Away!",
+  "item.glideaway.wind_in_a_bottle": "Vento em um frasco",
+  "item.glideaway.infinite_wind_in_a_bottle": "Vento infinito em um frasco",
+  "item.glideaway.hang_glider": "Planador",
+  "item.glideaway.cherry_hang_glider": "Planador de cerejeira",
+  "item.glideaway.sculk_hang_glider": "Planador de sculk",
+  "item.glideaway.azalea_hang_glider": "Planador de azaleia",
+  "gamerule.glideaway:pick_hang_glider": "Pega automaticamente o planador quando o jogador o larga",
+  "gamerule.glideaway:wind_sound": "Habilita os sons do vento durante o voo",
+  "gamerule.glideaway:glideaway:allow_sneak_release": "Permite abrir o planador ao agachar enquanto ainda estiver no chão",
+  "gamerule.glideaway:initial_velocity_glider_damage": "Danifica o planador com base na velocidade inicial do jogador",
+  "gamerule.glideaway:glideaway:fire_velocity_boost": "Aumenta a velocidade causada por fogo e fogueira",
+  "gamerule.glideaway:glideaway:lava_velocity_boost": "Aumenta a velocidade causada pela lava",
+  "subtitle.glideaway.hang_glider_opens": "Planador abre",
+  "advancements.glideaway.into_the_skies.title": "Nas nuvens!",
+  "advancements.glideaway.into_the_skies.description": "Use o planador pela primeira vez!"
+}
