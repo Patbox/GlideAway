@@ -11,7 +11,7 @@ public class ParticleHangGliderItem extends HangGliderItem {
     private final ParticleEffect particleEffect;
 
     public ParticleHangGliderItem(Settings settings, ParticleEffect particleEffect) {
-        super(Items.WOODEN_PICKAXE, settings);
+        super(settings);
         this.particleEffect = particleEffect;
     }
 

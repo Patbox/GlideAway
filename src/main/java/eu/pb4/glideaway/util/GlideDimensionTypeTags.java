@@ -18,6 +18,6 @@ public class GlideDimensionTypeTags {
     }
 
     public static boolean isIn(World world, TagKey<DimensionType> tag) {
-        return world.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE).getEntry(world.getDimension()).isIn(tag);
+        return world.getRegistryManager().getOrThrow(RegistryKeys.DIMENSION_TYPE).getEntry(world.getDimension()).isIn(tag);
     }
 }

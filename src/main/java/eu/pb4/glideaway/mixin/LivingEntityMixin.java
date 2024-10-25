@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
@@ -33,8 +34,8 @@ public abstract class LivingEntityMixin extends Entity {
     @SuppressWarnings("ConstantValue")
     @Inject(method = "onDismounted", at = @At("HEAD"))
     private void returnGlider(Entity vehicle, CallbackInfo ci) {
-        if (vehicle instanceof GliderEntity entity) {
-            if (entity.getWorld().getGameRules().getBoolean(GlideGamerules.PICK_HANG_GLIDER) || entity.hasCurseOfBinding()) {
+        if (this.getWorld() instanceof ServerWorld world && vehicle instanceof GliderEntity entity) {
+            if (world.getGameRules().getBoolean(GlideGamerules.PICK_HANG_GLIDER) || entity.hasCurseOfBinding()) {
                 entity.giveOrDrop(this);
             }
             this.setVelocity(entity.getVelocity());

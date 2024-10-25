@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,7 @@ public abstract class FireworkRocketEntityMixin extends Entity {
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/util/math/Vec3d;ZERO:Lnet/minecraft/util/math/Vec3d;", ordinal = 0))
     private Vec3d pushGliderWithFirework(Vec3d original) {
-        if (this.shooter != null && this.shooter.getVehicle() instanceof GliderEntity glider && this.getWorld().getGameRules().getBoolean(GlideGamerules.ALLOW_FIREWORK_BOOST)) {
+        if (this.getWorld() instanceof ServerWorld serverWorld && this.shooter != null && this.shooter.getVehicle() instanceof GliderEntity glider && serverWorld.getGameRules().getBoolean(GlideGamerules.ALLOW_FIREWORK_BOOST)) {
             var rotationVector = glider.getRotationVector();
             var velocity = glider.getVelocity();
 

@@ -1,5 +1,6 @@
 package eu.pb4.glideaway.entity;
 
+import com.mojang.datafixers.util.Pair;
 import eu.pb4.glideaway.item.GlideItems;
 import eu.pb4.glideaway.item.HangGliderItem;
 import eu.pb4.glideaway.util.GlideDimensionTypeTags;
@@ -11,6 +12,8 @@ import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
 import eu.pb4.polymer.virtualentity.api.attachment.EntityAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.tracker.DisplayTrackedData;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.advancement.criterion.TravelCriterion;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.component.DataComponentTypes;
@@ -25,6 +28,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -34,16 +39,19 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import xyz.nucleoid.packettweaker.PacketContext;
 
 import java.util.List;
 
 public class GliderEntity extends Entity implements PolymerEntity {
+    public static final TravelCriterion FLY_WITH_GLIDER = Criteria.register("glideaway:fly_with_glider", new TravelCriterion());
     private static final TrackedData<Float> ROLL = DataTracker.registerData(GliderEntity.class, TrackedDataHandlerRegistry.FLOAT);
     private ItemStack itemStack = GlideItems.HANG_GLIDER.getDefaultStack();
     private ItemStack modelStack = GlideItems.HANG_GLIDER.getDefaultStack();
@@ -56,7 +64,9 @@ public class GliderEntity extends Entity implements PolymerEntity {
     private boolean noDamage = false;
     private boolean hasLanded = false;
 
-    public static boolean create(World world, LivingEntity rider, ItemStack stack, Hand hand) {
+    private Vec3d startingPosition = Vec3d.ZERO;
+
+    public static boolean create(ServerWorld world, LivingEntity rider, ItemStack stack, Hand hand) {
         if (rider.hasVehicle() || (rider.isSneaking() && !world.getGameRules().getBoolean(GlideGamerules.ALLOW_SNEAK_RELEASE))) {
             return false;
         }
@@ -78,6 +88,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         var currentDim = rider.getDimensions(rider.getPose());
         entity.setItemStack(stack);
         entity.setPosition(rider.getPos().add(0, currentDim.height() - sitting.height(), 0));
+        entity.startingPosition = entity.getPos();
         entity.setYaw(rider.getYaw());
         entity.setPitch(rider.getPitch());
         entity.setVelocity(rider.getVelocity().add(rider.getRotationVector().multiply(0.2, 0.02, 0.2).multiply(rider.isSneaking() ? 2 : 1)));
@@ -113,6 +124,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         this.itemStack = stack;
         this.modelStack = stack.getItem().getDefaultStack();
         this.modelStack.set(DataComponentTypes.DYED_COLOR, stack.get(DataComponentTypes.DYED_COLOR));
+        this.modelStack.set(DataComponentTypes.ITEM_MODEL, stack.get(DataComponentTypes.ITEM_MODEL));
     }
 
     public GliderEntity(EntityType<?> type, World world) {
@@ -124,7 +136,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if (source.isIn(DamageTypeTags.CAN_BREAK_ARMOR_STAND)) {
             if (this.age - this.lastAttack > 30) {
                 this.attacks = 0;
@@ -151,7 +163,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
             return true;
         }
 
-        return super.damage(source, amount);
+        return false;
     }
 
     public void damageStack(int i) {
@@ -193,23 +205,25 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     public void giveOrDrop(@Nullable Entity entity) {
-        if (this.isRemoved()) {
-            return;
-        }
-
-        if (entity instanceof LivingEntity livingEntity && entity.isAlive()) {
-            if (livingEntity.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
-                livingEntity.setStackInHand(Hand.MAIN_HAND, this.getItemStack());
-            } else if (livingEntity.getStackInHand(Hand.OFF_HAND).isEmpty()) {
-                livingEntity.setStackInHand(Hand.OFF_HAND, this.getItemStack());
-            } else if (!(entity instanceof PlayerEntity player && player.giveItemStack(this.getItemStack()))) {
-                this.dropStack(this.getItemStack());
+        if (getWorld() instanceof ServerWorld world) {
+            if (this.isRemoved()) {
+                return;
             }
-        } else {
-            this.dropStack(this.getItemStack());
+
+            if (entity instanceof LivingEntity livingEntity && entity.isAlive()) {
+                if (livingEntity.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
+                    livingEntity.setStackInHand(Hand.MAIN_HAND, this.getItemStack());
+                } else if (livingEntity.getStackInHand(Hand.OFF_HAND).isEmpty()) {
+                    livingEntity.setStackInHand(Hand.OFF_HAND, this.getItemStack());
+                } else if (!(entity instanceof PlayerEntity player && player.giveItemStack(this.getItemStack()))) {
+                    this.dropStack(world, this.getItemStack());
+                }
+            } else {
+                this.dropStack(world, this.getItemStack());
+            }
+            this.setItemStack(ItemStack.EMPTY);
+            this.discard();
         }
-        this.setItemStack(ItemStack.EMPTY);
-        this.discard();
     }
 
     @Override
@@ -264,10 +278,10 @@ public class GliderEntity extends Entity implements PolymerEntity {
         for (int i = 0; i < 32; i++) {
             var state = serverWorld.getBlockState(mut);
             if (state.isOf(Blocks.FIRE) || state.isOf(Blocks.CAMPFIRE) && i < 24) {
-                this.addVelocity(0,  ((32 - i) / 32f) * this.getWorld().getGameRules().get(GlideGamerules.FIRE_BOOST).get(), 0);
+                this.addVelocity(0,  ((32 - i) / 32f) * serverWorld.getGameRules().get(GlideGamerules.FIRE_BOOST).get(), 0);
                 dmgFrequency = 1;
             } else if (state.isOf(Blocks.LAVA) && i < 6) {
-                this.addVelocity(0,  ((6 - i) / 6f) * this.getWorld().getGameRules().get(GlideGamerules.LAVA_BOOST).get(), 0);
+                this.addVelocity(0,  ((6 - i) / 6f) * serverWorld.getGameRules().get(GlideGamerules.LAVA_BOOST).get(), 0);
                 dmgTimeout = 2;
                 dmgFrequency = 1;
                 dmg = 2;
@@ -337,6 +351,10 @@ public class GliderEntity extends Entity implements PolymerEntity {
             }
         }
 
+        if (passenger instanceof ServerPlayerEntity player) {
+            GliderEntity.FLY_WITH_GLIDER.trigger(player, this.startingPosition);
+        }
+
         if (this.itemStack.getItem() instanceof HangGliderItem gliderItem) {
             gliderItem.tickGlider(serverWorld, this, passenger, this.itemStack);
         }
@@ -348,7 +366,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
             float o = (float)(n * 10.0 - 3.0);
             if (o > 0.0F) {
                 //this.playSound(passenger.getFallSound((int)o), 1.0F, 1.0F);
-                passenger.damage(this.getDamageSources().flyIntoWall(), o);
+                passenger.damage(serverWorld, this.getDamageSources().flyIntoWall(), o);
             }
         }
 
@@ -380,7 +398,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     @Override
-    public EntityType<?> getPolymerEntityType(ServerPlayerEntity player) {
+    public EntityType<?> getPolymerEntityType(PacketContext context) {
         return EntityType.ITEM_DISPLAY;
     }
 
@@ -388,7 +406,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     public void modifyRawTrackedData(List<DataTracker.SerializedEntry<?>> data, ServerPlayerEntity player, boolean initial) {
         if (initial) {
             data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.TELEPORTATION_DURATION, 2));
-            data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.INTERPOLATION_DURATION, 2));
+            data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.INTERPOLATION_DURATION, 3));
             data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.Item.ITEM, this.modelStack));
             data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.TRANSLATION, new Vector3f(0, 1.2f, -0.05f)));
             data.add(DataTracker.SerializedEntry.of(DisplayTrackedData.SCALE, new Vector3f(1.5f)));
@@ -413,11 +431,18 @@ public class GliderEntity extends Entity implements PolymerEntity {
     protected void readCustomDataFromNbt(NbtCompound nbt) {
         setItemStack(ItemStack.fromNbtOrEmpty(this.getRegistryManager(), nbt.getCompound("stack")));
         this.noDamage = nbt.getBoolean("no_damage");
+
+        if (nbt.contains("starting_position")) {
+            this.startingPosition = Vec3d.CODEC.decode(NbtOps.INSTANCE, nbt.get("starting_position")).map(Pair::getFirst).result().orElseGet(this::getPos);
+        } else {
+            this.startingPosition = this.getPos();
+        }
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.put("stack", this.itemStack.encodeAllowEmpty(this.getRegistryManager()));
+        nbt.put("stack", this.itemStack.toNbtAllowEmpty(this.getRegistryManager()));
+        nbt.put("starting_position", Vec3d.CODEC.encodeStart(NbtOps.INSTANCE, this.startingPosition).getOrThrow());
         nbt.putBoolean("no_damage", this.noDamage);
     }
 

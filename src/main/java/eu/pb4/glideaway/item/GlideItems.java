@@ -1,38 +1,36 @@
 package eu.pb4.glideaway.item;
 
-import eu.pb4.factorytools.api.block.MultiBlock;
-import eu.pb4.factorytools.api.item.FactoryBlockItem;
-import eu.pb4.factorytools.api.item.MultiBlockItem;
 import eu.pb4.glideaway.ModInit;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.TradeOffers;
+
+import java.util.function.Function;
 
 import static eu.pb4.glideaway.ModInit.id;
 
 public class GlideItems {
 
-    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(8), true));
-    public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(1), false));
-    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(300)));
-    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.CHERRY_LEAVES));
-    public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.SCULK_CHARGE_POP));
-    public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.SPORE_BLOSSOM_AIR));
+    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(8), true));
+    public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(1), false));
+    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", (settings) -> new DyeableHangGliderItem(settings.maxDamage(300).enchantable(8).repairable(Items.PHANTOM_MEMBRANE)));
+    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", (settings) -> new ParticleHangGliderItem(settings.maxDamage(400).enchantable(8).repairable(Items.PHANTOM_MEMBRANE), ParticleTypes.CHERRY_LEAVES));
+    public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", (settings) -> new ParticleHangGliderItem(settings.maxDamage(400).enchantable(8).repairable(Items.PHANTOM_MEMBRANE), ParticleTypes.SCULK_CHARGE_POP));
+    public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", (settings) -> new ParticleHangGliderItem(settings.maxDamage(400).enchantable(8).repairable(Items.PHANTOM_MEMBRANE), ParticleTypes.SPORE_BLOSSOM_AIR));
 
     public static void register() {
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
@@ -73,20 +71,9 @@ public class GlideItems {
         });
     }
 
-    public static <T extends Item> T register(String path, T item) {
-        Registry.register(Registries.ITEM, Identifier.of(ModInit.ID, path), item);
-        return item;
-    }
-
-    public static <E extends Block & PolymerBlock> BlockItem register(E block) {
-        var id = Registries.BLOCK.getId(block);
-        BlockItem item;
-        if (block instanceof MultiBlock multiBlock) {
-            item = new MultiBlockItem(multiBlock, new Item.Settings());
-        } else {
-            item = new FactoryBlockItem(block, new Item.Settings());
-        }
-
+    public static <T extends Item> T register(String path, Function<Item.Settings, T> function) {
+        var id = Identifier.of(ModInit.ID, path);
+        var item = function.apply(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id)));
         Registry.register(Registries.ITEM, id, item);
         return item;
     }
