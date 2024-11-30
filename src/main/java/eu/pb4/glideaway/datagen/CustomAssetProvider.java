@@ -1,15 +1,26 @@
 package eu.pb4.glideaway.datagen;
 
 import com.google.common.hash.HashCode;
+import eu.pb4.glideaway.item.GlideItems;
+import eu.pb4.polymer.resourcepack.api.AssetPaths;
+import eu.pb4.polymer.resourcepack.extras.api.format.item.ItemAsset;
+import eu.pb4.polymer.resourcepack.extras.api.format.item.model.BasicItemModel;
+import eu.pb4.polymer.resourcepack.extras.api.format.item.tint.ConstantTintSource;
+import eu.pb4.polymer.resourcepack.extras.api.format.item.tint.DyeTintSource;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Util;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+
+import static eu.pb4.glideaway.ModInit.id;
 
 class CustomAssetProvider implements DataProvider {
     private final DataOutput output;
@@ -28,28 +39,23 @@ class CustomAssetProvider implements DataProvider {
             }
         };
         return CompletableFuture.runAsync(() -> {
-            writeBlocksAndItems(assetWriter);
+            writeData(assetWriter);
         }, Util.getMainWorkerExecutor());
     }
 
-    private static final String BASE_MODEL_JSON = """
-            {
-              "parent": "intotheskies:block/base_|TYPE|",
-              "textures": {
-                "planks": "|PLANKS|",
-                "logs": "|LOG|"
-              }
-            }
-            """;
+    private void writeData(BiConsumer<String, byte[]> writer) {
+        for (var item : List.of(GlideItems.AZALEA_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER,
+                GlideItems.WIND_IN_A_BOTTLE, GlideItems.INFINITE_WIND_IN_A_BOTTLE)) {
+            var id = Registries.ITEM.getId(item);
 
-    private static final String ITEM_MODEL_JSON = """
-            {
-              "parent": "intotheskies:block/|I|"
-            }
-            """;
+            writer.accept(AssetPaths.itemAsset(id), new ItemAsset(
+                    new BasicItemModel(id.withPrefixedPath("item/")),
+                    ItemAsset.Properties.DEFAULT).toJson().getBytes(StandardCharsets.UTF_8));
+        }
 
-    private void writeBlocksAndItems(BiConsumer<String, byte[]> writer) {
-
+        writer.accept(AssetPaths.itemAsset(id("hang_glider")), new ItemAsset(
+                new BasicItemModel(id("item/hang_glider"), List.of(new ConstantTintSource(0xFFFFFF), new DyeTintSource(0xFFFFFFFF))),
+                ItemAsset.Properties.DEFAULT).toJson().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

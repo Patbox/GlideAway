@@ -110,7 +110,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
         var entity = new GliderEntity(GlideEntities.GLIDER, serverWorld);
         entity.setItemStack(stack.copyWithCount(1));
         entity.setPosition(vec3d.x, vec3d.y - 0.5f, vec3d.z);
-        entity.setYaw(direction.getAxis() == Direction.Axis.Y ? 0 : direction.asRotation());
+        entity.setYaw(direction.getAxis() == Direction.Axis.Y ? 0 : direction.getHorizontalQuarterTurns());
         entity.setPitch(direction.getAxis() != Direction.Axis.Y ? 0 : (direction == Direction.UP ? -90 : 90));
         entity.setVelocity(Vec3d.of(direction.getVector()).multiply(0.6));
 

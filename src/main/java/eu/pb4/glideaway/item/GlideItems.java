@@ -27,7 +27,7 @@ public class GlideItems {
 
     public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(8), true));
     public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(1), false));
-    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", (settings) -> new DyeableHangGliderItem(settings.maxDamage(300).enchantable(8).repairable(Items.PHANTOM_MEMBRANE)));
+    public static final HangGliderItem HANG_GLIDER = register("hang_glider", (settings) -> new HangGliderItem(settings.maxDamage(300).enchantable(8).repairable(Items.PHANTOM_MEMBRANE)));
     public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", (settings) -> new ParticleHangGliderItem(settings.maxDamage(400).enchantable(8).repairable(Items.PHANTOM_MEMBRANE), ParticleTypes.CHERRY_LEAVES));
     public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", (settings) -> new ParticleHangGliderItem(settings.maxDamage(400).enchantable(8).repairable(Items.PHANTOM_MEMBRANE), ParticleTypes.SCULK_CHARGE_POP));
     public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", (settings) -> new ParticleHangGliderItem(settings.maxDamage(400).enchantable(8).repairable(Items.PHANTOM_MEMBRANE), ParticleTypes.SPORE_BLOSSOM_AIR));
