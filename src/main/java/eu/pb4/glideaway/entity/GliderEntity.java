@@ -1,5 +1,6 @@
 package eu.pb4.glideaway.entity;
 
+import eu.pb4.glideaway.item.GlideDataComponents;
 import eu.pb4.glideaway.item.GlideItems;
 import eu.pb4.glideaway.item.HangGliderItem;
 import eu.pb4.glideaway.util.GlideDimensionTypeTags;
@@ -114,8 +115,10 @@ public class GliderEntity extends Entity implements PolymerEntity {
         this.modelStack = stack.getItem().getDefaultStack();
         this.modelStack.set(DataComponentTypes.DYED_COLOR, stack.get(DataComponentTypes.DYED_COLOR));
         this.modelStack.set(DataComponentTypes.BASE_COLOR, stack.get(DataComponentTypes.BASE_COLOR));
-        this.modelStack.set(DataComponentTypes.ITEM_MODEL, stack.get(DataComponentTypes.ITEM_MODEL));
-        this.modelStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, stack.get(DataComponentTypes.CUSTOM_MODEL_DATA));
+        if (GlideDataComponents.ITEM_MODEL != null) {
+            this.modelStack.set(GlideDataComponents.ITEM_MODEL, stack.get(GlideDataComponents.ITEM_MODEL));
+            this.modelStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, stack.get(DataComponentTypes.CUSTOM_MODEL_DATA));
+        }
     }
 
     public GliderEntity(EntityType<?> type, World world) {

@@ -7,11 +7,14 @@ import eu.pb4.glideaway.entity.GliderEntity;
 import eu.pb4.glideaway.util.GlideSoundEvents;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
@@ -21,14 +24,19 @@ import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import static eu.pb4.glideaway.ModInit.id;
 
 public class HangGliderItem extends ModeledItem {
     public static final Identifier USE_TRIGGER = id("on_use");
 
-    public HangGliderItem(Item item, Settings settings) {
-        super(item, settings);
+    public HangGliderItem(Settings settings) {
+        this(Items.WOODEN_PICKAXE, settings);
+    }
+
+    public HangGliderItem(Item polymerItem, Settings settings) {
+        super(polymerItem, settings);
 
         DispenserBlock.registerBehavior(this, new ItemDispenserBehavior() {
             public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
@@ -71,7 +79,15 @@ public class HangGliderItem extends ModeledItem {
     }
 
     @Override
-    public Item getPolymerItem(ItemStack itemStack, PacketContext context) {
-        return Items.MUSIC_DISC_CHIRP;
+    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, RegistryWrapper.WrapperLookup lookup, @Nullable ServerPlayerEntity player) {
+        var x = super.getPolymerItemStack(itemStack, tooltipType, lookup, player);
+        if (GlideDataComponents.ITEM_MODEL != null && itemStack.contains(GlideDataComponents.ITEM_MODEL)) {
+            var model = itemStack.get(GlideDataComponents.ITEM_MODEL);
+            if (model != null) {
+                x.set(GlideDataComponents.ITEM_MODEL, model );
+                x.set(DataComponentTypes.CUSTOM_MODEL_DATA, itemStack.get(DataComponentTypes.CUSTOM_MODEL_DATA));
+            }
+        }
+        return x;
     }
 }

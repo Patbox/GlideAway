@@ -27,13 +27,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.TradeOffers;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 import static eu.pb4.glideaway.ModInit.id;
 
 public class GlideItems {
 
     public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(8), true));
     public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(1), false));
-    public static final HangGliderItem HANG_GLIDER = register("hang_glider", gliderSettings(300, null), HangGliderItem::new);
+    public static final HangGliderItem HANG_GLIDER = register("hang_glider", gliderSettings(300, null), DyeableHangGliderItem::new);
     public static final HangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", gliderSettings(400, ParticleTypes.CHERRY_LEAVES), HangGliderItem::new);
     public static final HangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", gliderSettings(400, ParticleTypes.SCULK_CHARGE_POP), HangGliderItem::new);
     public static final HangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", gliderSettings(400, ParticleTypes.SPORE_BLOSSOM_AIR), HangGliderItem::new);
@@ -42,7 +44,7 @@ public class GlideItems {
 
 
     private static Item.Settings gliderSettings(int damage, @Nullable ParticleEffect particleEffect) {
-        var x = new Item.Settings().enchantable(8).repairable(Items.PHANTOM_MEMBRANE)
+        var x = new Item.Settings()
                 .rarity(particleEffect != null ? Rarity.UNCOMMON : Rarity.COMMON)
                 .component(GlideDataComponents.PARTICLE_EFFECT, particleEffect);
         if (damage > 0) {
@@ -95,7 +97,7 @@ public class GlideItems {
 
     public static <T extends Item> T register(String path, Item.Settings settings, Function<Item.Settings, T> function) {
         var id = Identifier.of(ModInit.ID, path);
-        var item = function.apply(settings.registryKey(RegistryKey.of(RegistryKeys.ITEM, id)));
+        var item = function.apply(settings);
         Registry.register(Registries.ITEM, id, item);
         return item;
     }
