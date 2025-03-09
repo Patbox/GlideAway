@@ -14,25 +14,42 @@ import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.TradeOffers;
+import org.jetbrains.annotations.Nullable;
 
 import static eu.pb4.glideaway.ModInit.id;
 
 public class GlideItems {
 
-    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(8), true));
-    public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", new WindInABottleItem(new Item.Settings().maxCount(1), false));
-    public static final DyeableHangGliderItem HANG_GLIDER = register("hang_glider", new DyeableHangGliderItem(new Item.Settings().maxDamage(300)));
-    public static final ParticleHangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.CHERRY_LEAVES));
-    public static final ParticleHangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.SCULK_CHARGE_POP));
-    public static final ParticleHangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", new ParticleHangGliderItem(new Item.Settings().maxDamage(400), ParticleTypes.SPORE_BLOSSOM_AIR));
+    public static final WindInABottleItem WIND_IN_A_BOTTLE = register("wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(8), true));
+    public static final WindInABottleItem INFINITE_WIND_IN_A_BOTTLE = register("infinite_wind_in_a_bottle", (settings) -> new WindInABottleItem(settings.maxCount(1), false));
+    public static final HangGliderItem HANG_GLIDER = register("hang_glider", gliderSettings(300, null), HangGliderItem::new);
+    public static final HangGliderItem CHERRY_HANG_GLIDER = register("cherry_hang_glider", gliderSettings(400, ParticleTypes.CHERRY_LEAVES), HangGliderItem::new);
+    public static final HangGliderItem SCULK_HANG_GLIDER = register("sculk_hang_glider", gliderSettings(400, ParticleTypes.SCULK_CHARGE_POP), HangGliderItem::new);
+    public static final HangGliderItem AZALEA_HANG_GLIDER = register("azalea_hang_glider", gliderSettings(400, ParticleTypes.SPORE_BLOSSOM_AIR), HangGliderItem::new);
+    public static final HangGliderItem TATER_HANG_GLIDER = register("tater_hang_glider", gliderSettings(-1, null).rarity(Rarity.EPIC), HangGliderItem::new);
+    public static final HangGliderItem PHANTOM_HANG_GLIDER = register("phantom_hang_glider", gliderSettings(400, ParticleTypes.MYCELIUM), HangGliderItem::new);
+
+
+    private static Item.Settings gliderSettings(int damage, @Nullable ParticleEffect particleEffect) {
+        var x = new Item.Settings().enchantable(8).repairable(Items.PHANTOM_MEMBRANE)
+                .rarity(particleEffect != null ? Rarity.UNCOMMON : Rarity.COMMON)
+                .component(GlideDataComponents.PARTICLE_EFFECT, particleEffect);
+        if (damage > 0) {
+            x.maxDamage(damage);
+        }
+        return x;
+    }
 
     public static void register() {
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(ModInit.ID, "a_group"), ItemGroup.create(ItemGroup.Row.BOTTOM, -1)
@@ -50,6 +67,7 @@ public class GlideItems {
                     entries.add(CHERRY_HANG_GLIDER);
                     entries.add(SCULK_HANG_GLIDER);
                     entries.add(AZALEA_HANG_GLIDER);
+                    entries.add(PHANTOM_HANG_GLIDER);
 
                     entries.add(WIND_IN_A_BOTTLE);
                     entries.add(INFINITE_WIND_IN_A_BOTTLE);
@@ -62,32 +80,27 @@ public class GlideItems {
             b.add(new TradeOffers.SellItemFactory(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5));
             b.add(new TradeOffers.SellItemFactory(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5));
             b.add(new TradeOffers.SellItemFactory(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5));
+            b.add(new TradeOffers.SellItemFactory(GlideItems.PHANTOM_HANG_GLIDER, 16, 1, 1, 5));
         });
 
         TradeOfferHelper.registerRebalancedWanderingTraderOffers((b) -> {
             b.pool(id("hang_gliders"), 1,
                     new TradeOffers.SellItemFactory(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5),
                     new TradeOffers.SellItemFactory(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5),
-                    new TradeOffers.SellItemFactory(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5)
+                    new TradeOffers.SellItemFactory(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5),
+                    new TradeOffers.SellItemFactory(GlideItems.PHANTOM_HANG_GLIDER, 16, 1, 1, 5)
             );
         });
     }
 
-    public static <T extends Item> T register(String path, T item) {
-        Registry.register(Registries.ITEM, Identifier.of(ModInit.ID, path), item);
+    public static <T extends Item> T register(String path, Item.Settings settings, Function<Item.Settings, T> function) {
+        var id = Identifier.of(ModInit.ID, path);
+        var item = function.apply(settings.registryKey(RegistryKey.of(RegistryKeys.ITEM, id)));
+        Registry.register(Registries.ITEM, id, item);
         return item;
     }
 
-    public static <E extends Block & PolymerBlock> BlockItem register(E block) {
-        var id = Registries.BLOCK.getId(block);
-        BlockItem item;
-        if (block instanceof MultiBlock multiBlock) {
-            item = new MultiBlockItem(multiBlock, new Item.Settings());
-        } else {
-            item = new FactoryBlockItem(block, new Item.Settings());
-        }
-
-        Registry.register(Registries.ITEM, id, item);
-        return item;
+    public static <T extends Item> T register(String path, Function<Item.Settings, T> function) {
+        return register(path, new Item.Settings(), function);
     }
 }

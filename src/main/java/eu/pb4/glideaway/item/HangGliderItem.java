@@ -61,5 +61,17 @@ public class HangGliderItem extends ModeledItem {
         return 8;
     }
 
-    public void tickGlider(ServerWorld world, GliderEntity entity, Entity passenger, ItemStack itemStack) {}
+    public void tickGlider(ServerWorld world, GliderEntity entity, Entity passenger, ItemStack itemStack) {
+        if (entity.age % 2 == 0) {
+            var effect = itemStack.get(GlideDataComponents.PARTICLE_EFFECT);
+            if (effect != null) {
+                world.spawnParticles(effect, entity.getX(), entity.getY() + 1.5, entity.getZ(), Math.max((int) (entity.getVelocity().lengthSquared() * 3f), 2), 0.8, 0, 0.8, 0);
+            }
+        }
+    }
+
+    @Override
+    public Item getPolymerItem(ItemStack itemStack, PacketContext context) {
+        return Items.MUSIC_DISC_CHIRP;
+    }
 }

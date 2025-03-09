@@ -6,6 +6,8 @@
   "item.glideaway.cherry_hang_glider": "Cherry Hang Glider",
   "item.glideaway.sculk_hang_glider": "Sculk Hang Glider",
   "item.glideaway.azalea_hang_glider": "Azalea Hang Glider",
+  "item.glideaway.tater_hang_glider": "Tater Hang Glider",
+  "item.glideaway.phantom_hang_glider": "Phantom Hang Glider",
 
   "gamerule.glideaway:pick_hang_glider": "Automatically pickup the Hang Glider when player leaves it",
   "gamerule.glideaway:wind_sound": "Enables wind sounds while gliding",

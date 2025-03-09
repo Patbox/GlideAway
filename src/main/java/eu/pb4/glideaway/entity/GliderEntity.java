@@ -113,6 +113,9 @@ public class GliderEntity extends Entity implements PolymerEntity {
         this.itemStack = stack;
         this.modelStack = stack.getItem().getDefaultStack();
         this.modelStack.set(DataComponentTypes.DYED_COLOR, stack.get(DataComponentTypes.DYED_COLOR));
+        this.modelStack.set(DataComponentTypes.BASE_COLOR, stack.get(DataComponentTypes.BASE_COLOR));
+        this.modelStack.set(DataComponentTypes.ITEM_MODEL, stack.get(DataComponentTypes.ITEM_MODEL));
+        this.modelStack.set(DataComponentTypes.CUSTOM_MODEL_DATA, stack.get(DataComponentTypes.CUSTOM_MODEL_DATA));
     }
 
     public GliderEntity(EntityType<?> type, World world) {
