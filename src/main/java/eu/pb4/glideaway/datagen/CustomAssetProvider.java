@@ -44,7 +44,7 @@ class CustomAssetProvider implements DataProvider {
     }
 
     private void writeData(BiConsumer<String, byte[]> writer) {
-        for (var item : List.of(GlideItems.AZALEA_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER,
+        for (var item : List.of(GlideItems.AZALEA_HANG_GLIDER, GlideItems.TATER_HANG_GLIDER, GlideItems.PHANTOM_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER,
                 GlideItems.WIND_IN_A_BOTTLE, GlideItems.INFINITE_WIND_IN_A_BOTTLE)) {
             var id = Registries.ITEM.getId(item);
 

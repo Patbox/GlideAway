@@ -6,6 +6,8 @@
   "item.glideaway.cherry_hang_glider": "Wiśniowa lotnia",
   "item.glideaway.sculk_hang_glider": "Sculkowa lotnia",
   "item.glideaway.azalea_hang_glider": "Azaliowa lotnia",
+  "item.glideaway.tater_hang_glider": "Ziemniaczana lotnia",
+  "item.glideaway.phantom_hang_glider": "Fantomowa lotnia",
   "gamerule.glideaway:pick_hang_glider": "Automatycznie podnieś lotnię, gdy gracz ją opuścił",
   "gamerule.glideaway:wind_sound": "Włącza dźwięki wiatru podczas szybowania",
   "gamerule.glideaway:glideaway:allow_sneak_release": "Pozwala na uwalnianie lotni przez skradanie podczas stania na ziemi",

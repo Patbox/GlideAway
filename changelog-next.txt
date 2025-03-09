@@ -1,0 +1,4 @@
+- Added Phantom Hang Glider.
+- The particle is now controlled by `glideaway:particle_effect` component.
+- Glider entity will now respect `custom_model_data` component.
+- All special gliders are now uncommon.
