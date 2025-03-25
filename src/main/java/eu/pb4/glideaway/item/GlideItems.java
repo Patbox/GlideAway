@@ -57,7 +57,7 @@ public class GlideItems {
                     for (var color : DyeColor.values()) {
                         if (color != DyeColor.WHITE) {
                             var glider = HANG_GLIDER.getDefaultStack();
-                            glider.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color.getEntityColor(), true));
+                            glider.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color.getEntityColor()));
                             entries.add(glider);
                         }
                     }

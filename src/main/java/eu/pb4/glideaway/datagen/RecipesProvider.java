@@ -55,7 +55,7 @@ class RecipesProvider extends FabricRecipeProvider {
                     var color = dye.getEntityColor();
 
                     var stack = new ItemStack(GlideItems.HANG_GLIDER);
-                    stack.set(DataComponentTypes.DYED_COLOR, dye != DyeColor.WHITE ? new DyedColorComponent(color, true) : null);
+                    stack.set(DataComponentTypes.DYED_COLOR, dye != DyeColor.WHITE ? new DyedColorComponent(color) : null);
 
                     var b = ShapedRecipeJsonBuilder.create(item, RecipeCategory.TOOLS, stack.getItem(), 1)
                             .group("intotheskies:glider")

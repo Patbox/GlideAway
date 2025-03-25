@@ -431,8 +431,8 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     @Override
     protected void readCustomDataFromNbt(NbtCompound nbt) {
-        setItemStack(ItemStack.fromNbtOrEmpty(this.getRegistryManager(), nbt.getCompound("stack")));
-        this.noDamage = nbt.getBoolean("no_damage");
+        setItemStack(ItemStack.fromNbt(this.getRegistryManager(), nbt.getCompoundOrEmpty("stack")).orElse(ItemStack.EMPTY));
+        this.noDamage = nbt.getBoolean("no_damage", false);
 
         if (nbt.contains("starting_position")) {
             this.startingPosition = Vec3d.CODEC.decode(NbtOps.INSTANCE, nbt.get("starting_position")).map(Pair::getFirst).result().orElseGet(this::getPos);
@@ -443,7 +443,9 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.put("stack", this.itemStack.toNbtAllowEmpty(this.getRegistryManager()));
+        if (!this.itemStack.isEmpty()) {
+            nbt.put("stack", this.itemStack.toNbt(this.getRegistryManager()));
+        }
         nbt.put("starting_position", Vec3d.CODEC.encodeStart(NbtOps.INSTANCE, this.startingPosition).getOrThrow());
         nbt.putBoolean("no_damage", this.noDamage);
     }
