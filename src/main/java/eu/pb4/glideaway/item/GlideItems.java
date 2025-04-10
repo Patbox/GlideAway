@@ -73,14 +73,7 @@ public class GlideItems {
 
         UseEntityCallback.EVENT.register(WIND_IN_A_BOTTLE::useOnEntityEvent);
 
-        TradeOfferHelper.registerWanderingTraderOffers(2, (b) -> {
-            b.add(new TradeOffers.SellItemFactory(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5));
-            b.add(new TradeOffers.SellItemFactory(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5));
-            b.add(new TradeOffers.SellItemFactory(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5));
-            b.add(new TradeOffers.SellItemFactory(GlideItems.PHANTOM_HANG_GLIDER, 16, 1, 1, 5));
-        });
-
-        TradeOfferHelper.registerRebalancedWanderingTraderOffers((b) -> {
+        TradeOfferHelper.registerWanderingTraderOffers((b) -> {
             b.pool(id("hang_gliders"), 1,
                     new TradeOffers.SellItemFactory(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5),
                     new TradeOffers.SellItemFactory(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5),
