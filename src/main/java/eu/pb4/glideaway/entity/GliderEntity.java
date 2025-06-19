@@ -37,6 +37,8 @@ import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.dynamic.Codecs;
@@ -430,24 +432,19 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {
-        setItemStack(ItemStack.fromNbt(this.getRegistryManager(), nbt.getCompoundOrEmpty("stack")).orElse(ItemStack.EMPTY));
-        this.noDamage = nbt.getBoolean("no_damage", false);
-
-        if (nbt.contains("starting_position")) {
-            this.startingPosition = Vec3d.CODEC.decode(NbtOps.INSTANCE, nbt.get("starting_position")).map(Pair::getFirst).result().orElseGet(this::getPos);
-        } else {
-            this.startingPosition = this.getPos();
-        }
+    protected void readCustomData(ReadView view) {
+        setItemStack(view.read("stack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
+        this.noDamage = view.getBoolean("no_damage", false);
+        this.startingPosition = view.read("starting_position", Vec3d.CODEC).orElse(this.getPos());
     }
 
     @Override
-    protected void writeCustomDataToNbt(NbtCompound nbt) {
+    protected void writeCustomData(WriteView view) {
         if (!this.itemStack.isEmpty()) {
-            nbt.put("stack", this.itemStack.toNbt(this.getRegistryManager()));
+            view.put("stack", ItemStack.OPTIONAL_CODEC, this.itemStack);
         }
-        nbt.put("starting_position", Vec3d.CODEC.encodeStart(NbtOps.INSTANCE, this.startingPosition).getOrThrow());
-        nbt.putBoolean("no_damage", this.noDamage);
+        view.put("starting_position", Vec3d.CODEC, this.startingPosition);
+        view.putBoolean("no_damage", this.noDamage);
     }
 
     public ItemStack getItemStack() {

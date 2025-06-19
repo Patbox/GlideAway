@@ -19,15 +19,15 @@ class DimensionTypeTagsProvider extends FabricTagProvider<DimensionType> {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
-        this.getOrCreateTagBuilder(GlideDimensionTypeTags.VOID_PICKUP)
+        this.getTagBuilder(GlideDimensionTypeTags.VOID_PICKUP)
                 .addOptional(Identifier.of("cerulean", "skies")
                 );
 
-        this.getOrCreateTagBuilder(GlideDimensionTypeTags.LOW_GRAVITY)
+        this.getTagBuilder(GlideDimensionTypeTags.LOW_GRAVITY)
                 .addOptional(Identifier.of("cerulean", "skies")
                 );
 
-        this.getOrCreateTagBuilder(GlideDimensionTypeTags.HIGH_GRAVITY)
+        this.getTagBuilder(GlideDimensionTypeTags.HIGH_GRAVITY)
                 .addOptional(DimensionTypes.THE_END_ID)
         ;
     }

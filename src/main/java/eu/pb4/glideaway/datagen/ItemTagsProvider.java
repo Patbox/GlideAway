@@ -17,23 +17,23 @@ class ItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
-        this.getOrCreateTagBuilder(GlideItemTags.HANG_GLIDERS)
+        this.valueLookupBuilder(GlideItemTags.HANG_GLIDERS)
                 .add(GlideItems.HANG_GLIDER)
                 .addOptionalTag(GlideItemTags.SPECIAL_HANG_GLIDERS);
 
-        this.getOrCreateTagBuilder(GlideItemTags.SPECIAL_HANG_GLIDERS)
+        this.valueLookupBuilder(GlideItemTags.SPECIAL_HANG_GLIDERS)
                 .add(GlideItems.AZALEA_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER,
                         GlideItems.PHANTOM_HANG_GLIDER, GlideItems.TATER_HANG_GLIDER);
 
-        this.getOrCreateTagBuilder(ItemTags.DYEABLE).add(GlideItems.HANG_GLIDER);
+        this.valueLookupBuilder(ItemTags.DYEABLE).add(GlideItems.HANG_GLIDER);
 
-        this.getOrCreateTagBuilder(ItemTags.DURABILITY_ENCHANTABLE)
+        this.valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
-        this.getOrCreateTagBuilder(ItemTags.VANISHING_ENCHANTABLE)
+        this.valueLookupBuilder(ItemTags.VANISHING_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
-        this.getOrCreateTagBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE)
+        this.valueLookupBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
-        this.getOrCreateTagBuilder(GlideItemTags.GLIDER_ENCHANTABLE)
+        this.valueLookupBuilder(GlideItemTags.GLIDER_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
     }
 }
