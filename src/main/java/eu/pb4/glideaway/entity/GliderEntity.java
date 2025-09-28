@@ -89,8 +89,8 @@ public class GliderEntity extends Entity implements PolymerEntity {
         var sitting = rider.getDimensions(EntityPose.SITTING);
         var currentDim = rider.getDimensions(rider.getPose());
         entity.setItemStack(stack);
-        entity.setPosition(rider.getPos().add(0, currentDim.height() - sitting.height(), 0));
-        entity.startingPosition = entity.getPos();
+        entity.setPosition(rider.getEntityPos().add(0, currentDim.height() - sitting.height(), 0));
+        entity.startingPosition = entity.getEntityPos();
         entity.setYaw(rider.getYaw());
         entity.setPitch(rider.getPitch());
         entity.setVelocity(rider.getVelocity().add(rider.getRotationVector().multiply(0.2, 0.02, 0.2).multiply(rider.isSneaking() ? 2 : 1)));
@@ -175,7 +175,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
             return;
         }
 
-        var serverWorld = (ServerWorld) this.getWorld();
+        var serverWorld = (ServerWorld) this.getEntityWorld();
         itemStack.damage(i, serverWorld, null, (item) -> {
             var old = this.itemStack;
             old.increment(1);
@@ -209,7 +209,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     public void giveOrDrop(@Nullable Entity entity) {
-        if (getWorld() instanceof ServerWorld world) {
+        if (this.getEntityWorld() instanceof ServerWorld world) {
             if (this.isRemoved()) {
                 return;
             }
@@ -232,7 +232,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     @Override
     public void tick() {
-        if (!(this.getWorld() instanceof ServerWorld serverWorld)) {
+        if (!(this.getEntityWorld() instanceof ServerWorld serverWorld)) {
             return;
         }
 
@@ -394,7 +394,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     @Override
     protected void tickInVoid() {
-        if (GlideDimensionTypeTags.isIn(this.getWorld(), GlideDimensionTypeTags.VOID_PICKUP)) {
+        if (GlideDimensionTypeTags.isIn(this.getEntityWorld(), GlideDimensionTypeTags.VOID_PICKUP)) {
             this.giveOrDrop(this.getFirstPassenger());
         } else {
             super.tickInVoid();
@@ -435,7 +435,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     protected void readCustomData(ReadView view) {
         setItemStack(view.read("stack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
         this.noDamage = view.getBoolean("no_damage", false);
-        this.startingPosition = view.read("starting_position", Vec3d.CODEC).orElse(this.getPos());
+        this.startingPosition = view.read("starting_position", Vec3d.CODEC).orElse(this.getEntityPos());
     }
 
     @Override

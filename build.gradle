@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.10.+'
+	id 'fabric-loom' version '1.11.+'
 	id "com.modrinth.minotaur" version "2.+"
 	id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -73,11 +73,11 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation 'eu.pb4:polymer-core:0.13.1+1.21.6'
-	modImplementation 'eu.pb4:polymer-resource-pack:0.13.1+1.21.6'
-	modImplementation 'eu.pb4:polymer-resource-pack-extras:0.13.1+1.21.6'
-	modImplementation 'eu.pb4:polymer-autohost:0.13.1+1.21.6'
-	modImplementation 'eu.pb4:polymer-virtual-entity:0.13.1+1.21.6'
+	modImplementation 'eu.pb4:polymer-core:0.14.0-rc.2+1.21.9-rc1'
+	modImplementation 'eu.pb4:polymer-resource-pack:0.14.0-rc.2+1.21.9-rc1'
+	modImplementation 'eu.pb4:polymer-resource-pack-extras:0.14.0-rc.2+1.21.9-rc1'
+	modImplementation 'eu.pb4:polymer-autohost:0.14.0-rc.2+1.21.9-rc1'
+	modImplementation 'eu.pb4:polymer-virtual-entity:0.14.0-rc.2+1.21.9-rc1'
 	modImplementation include('eu.pb4:common-protection-api:1.0.0')
 
 	// Uncomment the following line to enable the deprecated Fabric API modules. 

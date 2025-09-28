@@ -34,7 +34,7 @@ public abstract class LivingEntityMixin extends Entity {
     @SuppressWarnings("ConstantValue")
     @Inject(method = "onDismounted", at = @At("HEAD"))
     private void returnGlider(Entity vehicle, CallbackInfo ci) {
-        if (this.getWorld() instanceof ServerWorld world && vehicle instanceof GliderEntity entity) {
+        if (this.getEntityWorld() instanceof ServerWorld world && vehicle instanceof GliderEntity entity) {
             if (world.getGameRules().getBoolean(GlideGamerules.PICK_HANG_GLIDER) || entity.hasCurseOfBinding()) {
                 entity.giveOrDrop(this);
             }

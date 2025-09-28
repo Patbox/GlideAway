@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class FireworkRocketItemMixin {
     @ModifyExpressionValue(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isGliding()Z"))
     private boolean allowUsageOfFirework(boolean original, @Local(argsOnly = true) PlayerEntity player) {
-        return original || (player.getWorld() instanceof ServerWorld world && world.getGameRules().getBoolean(GlideGamerules.ALLOW_FIREWORK_BOOST) && player.getVehicle() instanceof GliderEntity);
+        return original || (player.getEntityWorld() instanceof ServerWorld world && world.getGameRules().getBoolean(GlideGamerules.ALLOW_FIREWORK_BOOST) && player.getVehicle() instanceof GliderEntity);
     }
 
     @ModifyReturnValue(method = "use", at = @At(value = "RETURN"))

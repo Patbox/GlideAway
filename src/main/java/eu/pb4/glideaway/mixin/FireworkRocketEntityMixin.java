@@ -30,7 +30,7 @@ public abstract class FireworkRocketEntityMixin extends Entity {
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/util/math/Vec3d;ZERO:Lnet/minecraft/util/math/Vec3d;", ordinal = 0))
     private Vec3d pushGliderWithFirework(Vec3d original) {
-        if (this.getWorld() instanceof ServerWorld serverWorld && this.shooter != null && this.shooter.getVehicle() instanceof GliderEntity glider && serverWorld.getGameRules().getBoolean(GlideGamerules.ALLOW_FIREWORK_BOOST)) {
+        if (this.getEntityWorld() instanceof ServerWorld serverWorld && this.shooter != null && this.shooter.getVehicle() instanceof GliderEntity glider && serverWorld.getGameRules().getBoolean(GlideGamerules.ALLOW_FIREWORK_BOOST)) {
             var rotationVector = glider.getRotationVector();
             var velocity = glider.getVelocity();
 

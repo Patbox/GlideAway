@@ -35,9 +35,9 @@ public class WindInABottleItem extends Item implements PolymerItem {
     public ActionResult useOnEntityEvent(PlayerEntity user, World world, Hand hand, Entity entity, EntityHitResult result) {
         var stack = user.getStackInHand(hand);
 
-        if (!world.isClient && entity instanceof WindChargeEntity windChargeEntity && stack.isOf(Items.GLASS_BOTTLE)) {
+        if (!world.isClient() && entity instanceof WindChargeEntity windChargeEntity && stack.isOf(Items.GLASS_BOTTLE)) {
             world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
-            world.emitGameEvent(user, GameEvent.FLUID_PICKUP, user.getPos());
+            world.emitGameEvent(user, GameEvent.FLUID_PICKUP, user.getEntityPos());
             if (user instanceof ServerPlayerEntity serverPlayerEntity) {
                 Criteria.PLAYER_INTERACTED_WITH_ENTITY.trigger(serverPlayerEntity, stack, windChargeEntity);
                 serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
