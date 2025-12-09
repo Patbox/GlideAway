@@ -2,52 +2,50 @@ package eu.pb4.glideaway.item;
 
 import eu.pb4.glideaway.entity.GliderEntity;
 import eu.pb4.polymer.core.api.item.PolymerItem;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.world.World;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 import xyz.nucleoid.packettweaker.PacketContext;
 
 import static eu.pb4.glideaway.ModInit.id;
 
 public class HangGliderItem extends Item implements PolymerItem {
 
-    public HangGliderItem(Settings settings) {
+    public HangGliderItem(Properties settings) {
         super(settings);
 
-        DispenserBlock.registerBehavior(this, new ItemDispenserBehavior() {
-            public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+        DispenserBlock.registerBehavior(this, new DefaultDispenseItemBehavior() {
+            public ItemStack execute(BlockSource pointer, ItemStack stack) {
                 return GliderEntity.createDispenser(pointer, stack);
             }
         });
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        var stack = user.getStackInHand(hand);
-        if (world instanceof ServerWorld serverWorld && GliderEntity.create(serverWorld, user, stack, hand)) {
-            user.setStackInHand(hand, ItemStack.EMPTY);
-            return ActionResult.SUCCESS_SERVER;
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        var stack = user.getItemInHand(hand);
+        if (world instanceof ServerLevel serverWorld && GliderEntity.create(serverWorld, user, stack, hand)) {
+            user.setItemInHand(hand, ItemStack.EMPTY);
+            return InteractionResult.SUCCESS_SERVER;
         }
 
         return super.use(world, user, hand);
     }
 
-    public void tickGlider(ServerWorld world, GliderEntity entity, Entity passenger, ItemStack itemStack) {
-        if (entity.age % 2 == 0) {
+    public void tickGlider(ServerLevel world, GliderEntity entity, Entity passenger, ItemStack itemStack) {
+        if (entity.tickCount % 2 == 0) {
             var effect = itemStack.get(GlideDataComponents.PARTICLE_EFFECT);
             if (effect != null) {
-                world.spawnParticles(effect, entity.getX(), entity.getY() + 1.5, entity.getZ(), Math.max((int) (entity.getVelocity().lengthSquared() * 3f), 2), 0.8, 0, 0.8, 0);
+                world.sendParticles(effect, entity.getX(), entity.getY() + 1.5, entity.getZ(), Math.max((int) (entity.getDeltaMovement().lengthSqr() * 3f), 2), 0.8, 0, 0.8, 0);
             }
         }
     }

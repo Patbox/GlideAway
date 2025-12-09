@@ -8,10 +8,10 @@ import eu.pb4.polymer.resourcepack.extras.api.format.item.model.BasicItemModel;
 import eu.pb4.polymer.resourcepack.extras.api.format.item.tint.ConstantTintSource;
 import eu.pb4.polymer.resourcepack.extras.api.format.item.tint.DyeTintSource;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.DataOutput;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
-import net.minecraft.registry.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.util.Util;
 
 import java.io.IOException;
@@ -23,33 +23,33 @@ import java.util.function.BiConsumer;
 import static eu.pb4.glideaway.ModInit.id;
 
 class CustomAssetProvider implements DataProvider {
-    private final DataOutput output;
+    private final PackOutput output;
 
     public CustomAssetProvider(FabricDataOutput output) {
         this.output = output;
     }
 
     @Override
-    public CompletableFuture<?> run(DataWriter writer) {
+    public CompletableFuture<?> run(CachedOutput writer) {
         BiConsumer<String, byte[]> assetWriter = (path, data) -> {
             try {
-                writer.write(this.output.getPath().resolve(path), data, HashCode.fromBytes(data));
+                writer.writeIfNeeded(this.output.getOutputFolder().resolve(path), data, HashCode.fromBytes(data));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         };
         return CompletableFuture.runAsync(() -> {
             writeData(assetWriter);
-        }, Util.getMainWorkerExecutor());
+        }, Util.backgroundExecutor());
     }
 
     private void writeData(BiConsumer<String, byte[]> writer) {
         for (var item : List.of(GlideItems.AZALEA_HANG_GLIDER, GlideItems.TATER_HANG_GLIDER, GlideItems.PHANTOM_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER,
                 GlideItems.WIND_IN_A_BOTTLE, GlideItems.INFINITE_WIND_IN_A_BOTTLE)) {
-            var id = Registries.ITEM.getId(item);
+            var id = BuiltInRegistries.ITEM.getKey(item);
 
             writer.accept(AssetPaths.itemAsset(id), new ItemAsset(
-                    new BasicItemModel(id.withPrefixedPath("item/")),
+                    new BasicItemModel(id.withPrefix("item/")),
                     ItemAsset.Properties.DEFAULT).toJson().getBytes(StandardCharsets.UTF_8));
         }
 

@@ -6,22 +6,16 @@ import eu.pb4.glideaway.item.GlideItems;
 import eu.pb4.glideaway.item.HangGliderItem;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.AdvancementFrame;
-import net.minecraft.advancement.criterion.ItemCriterion;
-import net.minecraft.advancement.criterion.TravelCriterion;
-import net.minecraft.advancement.criterion.UsingItemCriterion;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.predicate.NumberRange;
-import net.minecraft.predicate.entity.DistancePredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.criterion.DistancePredicate;
+import net.minecraft.advancements.criterion.DistanceTrigger;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -29,28 +23,28 @@ import java.util.function.Consumer;
 
 class AdvancementsProvider extends FabricAdvancementProvider {
 
-    protected AdvancementsProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    protected AdvancementsProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    public void generateAdvancement(RegistryWrapper.WrapperLookup registryLookup, Consumer<AdvancementEntry> exporter) {
-        var item = registryLookup.getOrThrow(RegistryKeys.ITEM);
+    public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> exporter) {
+        var item = registryLookup.lookupOrThrow(Registries.ITEM);
         //noinspection removal
-        var root = Advancement.Builder.create()
+        var root = Advancement.Builder.advancement()
                 .display(
                         GlideItems.HANG_GLIDER,
-                        Text.translatable("advancements.glideaway.into_the_skies.title"),
-                        Text.translatable("advancements.glideaway.into_the_skies.description"),
+                        Component.translatable("advancements.glideaway.into_the_skies.title"),
+                        Component.translatable("advancements.glideaway.into_the_skies.description"),
                         null,
-                        AdvancementFrame.TASK,
+                        AdvancementType.TASK,
                         true,
                         true,
                         false
                 )
-                .parent(Identifier.ofVanilla("adventure/root"))
-                .criterion("any_item", GliderEntity.FLY_WITH_GLIDER.create(new TravelCriterion.Conditions(Optional.empty(), Optional.empty(), Optional.of(DistancePredicate.absolute(NumberRange.DoubleRange.atLeast(5))))))
-                .build(exporter, "glideaway:into_the_skies");
+                .parent(Identifier.withDefaultNamespace("adventure/root"))
+                .addCriterion("any_item", GliderEntity.FLY_WITH_GLIDER.createCriterion(new DistanceTrigger.TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(DistancePredicate.absolute(MinMaxBounds.Doubles.atLeast(5))))))
+                .save(exporter, "glideaway:into_the_skies");
 
     }
 }

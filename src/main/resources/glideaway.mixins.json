@@ -8,10 +8,10 @@
     "FireworkRocketEntityMixin",
     "FireworkRocketItemMixin",
     "LivingEntityMixin",
-    "ServerPlayerEntityMixin",
-    "ServerPlayNetworkHandlerAccessor",
+    "ServerPlayerMixin",
+    "ServerGamePacketListenerImplAccessor",
     "ShapedRecipeAccessor",
-    "datafixer.Schema1460Mixin"
+    "datafixer.V1460Mixin"
   ],
   "client": [
   ],

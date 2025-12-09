@@ -1,9 +1,9 @@
 package eu.pb4.glideaway.item;
 
 import eu.pb4.glideaway.ModInit;
-import net.minecraft.item.Item;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 public class GlideItemTags {
     public static final TagKey<Item> HANG_GLIDERS = of("hand_gliders");
@@ -11,6 +11,6 @@ public class GlideItemTags {
     public static final TagKey<Item> GLIDER_ENCHANTABLE = of("enchantable/glider");
 
     private static TagKey<Item> of(String path) {
-        return TagKey.of(RegistryKeys.ITEM, ModInit.id(path));
+        return TagKey.create(Registries.ITEM, ModInit.id(path));
     }
 }

@@ -1,29 +1,35 @@
 package eu.pb4.glideaway.util;
 
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.minecraft.world.GameRules;
+
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
 
 public class GlideGamerules {
-    public static final GameRules.Key<GameRules.BooleanRule> PICK_HANG_GLIDER = GameRuleRegistry.register("glideaway:pick_hang_glider", GameRules.Category.MISC,
-            GameRuleFactory.createBooleanRule(false));
+    public static final GameRule<Boolean> PICK_HANG_GLIDER = GameRuleBuilder.forBoolean(false).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:pick_hang_glider"));
 
-    public static final GameRules.Key<GameRules.BooleanRule> WIND_SOUND = GameRuleRegistry.register("glideaway:wind_sound", GameRules.Category.MISC,
-            GameRuleFactory.createBooleanRule(true));
+    public static final GameRule<Boolean> WIND_SOUND = GameRuleBuilder.forBoolean(true).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:wind_sound"));
 
-    public static final GameRules.Key<GameRules.BooleanRule> ALLOW_SNEAK_RELEASE = GameRuleRegistry.register("glideaway:allow_sneak_release", GameRules.Category.MISC,
-            GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.BooleanRule> ALLOW_FIREWORK_BOOST = GameRuleRegistry.register("glideaway:allow_firework_boost", GameRules.Category.MISC,
-            GameRuleFactory.createBooleanRule(false));
+    public static final GameRule<Boolean> ALLOW_SNEAK_RELEASE = GameRuleBuilder.forBoolean(true).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:allow_sneak_release"));
 
-    public static final GameRules.Key<DoubleRule> INITIAL_VELOCITY_GLIDER_DAMAGE = GameRuleRegistry.register("glideaway:initial_velocity_glider_damage", GameRules.Category.MISC,
-            GameRuleFactory.createDoubleRule(50, 0));
+    public static final GameRule<Boolean> ALLOW_FIREWORK_BOOST = GameRuleBuilder.forBoolean(false).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:allow_firework_boost"));
 
-    public static final GameRules.Key<DoubleRule> FIRE_BOOST = GameRuleRegistry.register("glideaway:fire_velocity_boost", GameRules.Category.MISC,
-            GameRuleFactory.createDoubleRule(0.06, 0, 1));
+    public static final GameRule<Double> INITIAL_VELOCITY_GLIDER_DAMAGE = GameRuleBuilder.forDouble(50)
+            .minValue(0d).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:initial_velocity_glider_damage"));
 
-    public static final GameRules.Key<DoubleRule> LAVA_BOOST = GameRuleRegistry.register("glideaway:lava_velocity_boost", GameRules.Category.MISC,
-            GameRuleFactory.createDoubleRule(0.02, 0, 1));
+    public static final GameRule<Double> FIRE_BOOST = GameRuleBuilder.forDouble(0.06)
+            .range(0d, 1d).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:fire_velocity_boost"));
+
+    public static final GameRule<Double> LAVA_BOOST = GameRuleBuilder.forDouble(0.02)
+            .range(0d, 1d).category(GameRuleCategory.MISC)
+            .buildAndRegister(Identifier.parse("glideaway:lava_velocity_boost"));
+
     public static void register() {}
 }

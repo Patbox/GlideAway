@@ -8,8 +8,8 @@ import eu.pb4.polymer.core.api.other.PolymerStat;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.stat.StatFormatter;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.stats.StatFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ public class ModInit implements ModInitializer {
 	public static Identifier GLIDE_ONE_CM;
 
     public static Identifier id(String path) {
-		return Identifier.of(ID, path);
+		return Identifier.fromNamespaceAndPath(ID, path);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ModInit implements ModInitializer {
 		GlideItems.register();
 		GlideEntities.register();
 		GlideGamerules.register();
-		GLIDE_ONE_CM = PolymerStat.registerStat(Identifier.of("glideaway", "glide_one_cm"), StatFormatter.DISTANCE);
+		GLIDE_ONE_CM = PolymerStat.registerStat(Identifier.fromNamespaceAndPath("glideaway", "glide_one_cm"), StatFormatter.DISTANCE);
 
 		PolymerResourcePackUtils.addModAssets(ID);
 		PolymerResourcePackUtils.markAsRequired();

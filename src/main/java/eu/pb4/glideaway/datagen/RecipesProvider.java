@@ -4,27 +4,27 @@ import eu.pb4.glideaway.item.GlideItems;
 import eu.pb4.glideaway.mixin.ShapedRecipeAccessor;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.criterion.InventoryChangedCriterion;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.DyedColorComponent;
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
-import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.data.recipe.ShapelessRecipeJsonBuilder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,63 +32,63 @@ import java.util.concurrent.CompletableFuture;
 import static eu.pb4.glideaway.ModInit.id;
 
 class RecipesProvider extends FabricRecipeProvider {
-    public RecipesProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public RecipesProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup, RecipeExporter exporter) {
-        return new RecipeGenerator(registryLookup, exporter) {
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
+        return new RecipeProvider(registryLookup, exporter) {
             @Override
-            public void generate() {
+            public void buildRecipes() {
                 //noinspection unchecked
-                var item = registryLookup.getOrThrow(RegistryKeys.ITEM);
+                var item = registryLookup.lookupOrThrow(Registries.ITEM);
 
-                ShapelessRecipeJsonBuilder.create(item, RecipeCategory.TOOLS, GlideItems.WIND_IN_A_BOTTLE, 1)
-                        .input(Items.GLASS_BOTTLE)
-                        .input(Items.WIND_CHARGE)
-                        .criterion("wool", InventoryChangedCriterion.Conditions.items(Items.WIND_CHARGE))
-                        .offerTo(exporter);
+                ShapelessRecipeBuilder.shapeless(item, RecipeCategory.TOOLS, GlideItems.WIND_IN_A_BOTTLE, 1)
+                        .requires(Items.GLASS_BOTTLE)
+                        .requires(Items.WIND_CHARGE)
+                        .unlockedBy("wool", InventoryChangeTrigger.TriggerInstance.hasItems(Items.WIND_CHARGE))
+                        .save(output);
 
                 for (var dye : DyeColor.values()) {
-                    var wool = Registries.ITEM.get(Identifier.ofVanilla(dye.asString() + "_wool"));
-                    var color = dye.getEntityColor();
+                    var wool = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(dye.getSerializedName() + "_wool"));
+                    var color = dye.getTextureDiffuseColor();
 
                     var stack = new ItemStack(GlideItems.HANG_GLIDER);
-                    stack.set(DataComponentTypes.DYED_COLOR, dye != DyeColor.WHITE ? new DyedColorComponent(color) : null);
+                    stack.set(DataComponents.DYED_COLOR, dye != DyeColor.WHITE ? new DyedItemColor(color) : null);
 
-                    var b = ShapedRecipeJsonBuilder.create(item, RecipeCategory.TOOLS, stack.getItem(), 1)
+                    var b = ShapedRecipeBuilder.shaped(item, RecipeCategory.TOOLS, stack.getItem(), 1)
                             .group("intotheskies:glider")
                             .pattern("pww")
                             .pattern("ipw")
                             .pattern(" ip")
-                            .input('i', Items.STICK)
-                            .input('w', wool)
-                            .input('p', Items.PHANTOM_MEMBRANE)
-                            .criterion("membrane", InventoryChangedCriterion.Conditions.items(Items.PHANTOM_MEMBRANE))
-                            .criterion("wool", InventoryChangedCriterion.Conditions.items(wool));
+                            .define('i', Items.STICK)
+                            .define('w', wool)
+                            .define('p', Items.PHANTOM_MEMBRANE)
+                            .unlockedBy("membrane", InventoryChangeTrigger.TriggerInstance.hasItems(Items.PHANTOM_MEMBRANE))
+                            .unlockedBy("wool", InventoryChangeTrigger.TriggerInstance.hasItems(wool));
 
-                    b.offerTo(new RecipeExporter() {
+                    b.save(new RecipeOutput() {
                         @Override
-                        public void accept(RegistryKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
+                        public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
                             var base = ((ShapedRecipe) recipe);
-                            exporter.accept(key, new ShapedRecipe(base.getGroup(), base.getCategory(), ((ShapedRecipeAccessor) base).getRaw(), stack), advancement);
+                            output.accept(key, new ShapedRecipe(base.group(), base.category(), ((ShapedRecipeAccessor) base).getPattern(), stack), advancement);
                         }
 
                         @Override
-                        public Advancement.Builder getAdvancementBuilder() {
-                            return exporter.getAdvancementBuilder();
+                        public Advancement.Builder advancement() {
+                            return output.advancement();
                         }
 
                         @Override
-                        public void addRootAdvancement() {
-                            exporter.addRootAdvancement();
+                        public void includeRootAdvancement() {
+                            output.includeRootAdvancement();
                         }
-                    },  "glider/" + dye.asString());
+                    },  "glider/" + dye.getSerializedName());
                 }
             }
 
-            public void of(RecipeExporter exporter, RecipeEntry<?>... recipes) {
+            public void of(RecipeOutput exporter, RecipeHolder<?>... recipes) {
                 for (var recipe : recipes) {
                     exporter.accept(recipe.id(), recipe.value(), null);
                 }
