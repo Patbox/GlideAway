@@ -1,13 +1,15 @@
 package eu.pb4.glideaway.datagen;
 
 import eu.pb4.glideaway.item.GlideItems;
+import eu.pb4.glideaway.mixin.NormalCraftingRecipeAccessor;
 import eu.pb4.glideaway.mixin.ShapedRecipeAccessor;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.crafting.Recipe;
@@ -32,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import static eu.pb4.glideaway.ModInit.id;
 
 class RecipesProvider extends FabricRecipeProvider {
-    public RecipesProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public RecipesProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
@@ -54,10 +57,12 @@ class RecipesProvider extends FabricRecipeProvider {
                     var wool = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(dye.getSerializedName() + "_wool"));
                     var color = dye.getTextureDiffuseColor();
 
-                    var stack = new ItemStack(GlideItems.HANG_GLIDER);
-                    stack.set(DataComponents.DYED_COLOR, dye != DyeColor.WHITE ? new DyedItemColor(color) : null);
+                    var stack = DataComponentPatch.builder();
+                    if (dye != DyeColor.WHITE) {
+                        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color));
+                    }
 
-                    var b = ShapedRecipeBuilder.shaped(item, RecipeCategory.TOOLS, stack.getItem(), 1)
+                    var b = ShapedRecipeBuilder.shaped(item, RecipeCategory.TOOLS, GlideItems.HANG_GLIDER, 1)
                             .group("intotheskies:glider")
                             .pattern("pww")
                             .pattern("ipw")
@@ -72,7 +77,8 @@ class RecipesProvider extends FabricRecipeProvider {
                         @Override
                         public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
                             var base = ((ShapedRecipe) recipe);
-                            output.accept(key, new ShapedRecipe(base.group(), base.category(), ((ShapedRecipeAccessor) base).getPattern(), stack), advancement);
+                            var nor = (NormalCraftingRecipeAccessor) recipe;
+                            output.accept(key, new ShapedRecipe(nor.getCommonInfo(), nor.getBookInfo(), ((ShapedRecipeAccessor) base).getPattern(), new ItemStackTemplate(GlideItems.HANG_GLIDER, stack.build())), advancement);
                         }
 
                         @Override
@@ -84,7 +90,7 @@ class RecipesProvider extends FabricRecipeProvider {
                         public void includeRootAdvancement() {
                             output.includeRootAdvancement();
                         }
-                    },  "glider/" + dye.getSerializedName());
+                    },  "glideaway:glider/" + dye.getSerializedName());
                 }
             }
 

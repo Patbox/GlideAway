@@ -8,8 +8,9 @@
     "FireworkRocketEntityMixin",
     "FireworkRocketItemMixin",
     "LivingEntityMixin",
-    "ServerPlayerMixin",
+    "NormalCraftingRecipeAccessor",
     "ServerGamePacketListenerImplAccessor",
+    "ServerPlayerMixin",
     "ShapedRecipeAccessor",
     "datafixer.V1460Mixin"
   ],

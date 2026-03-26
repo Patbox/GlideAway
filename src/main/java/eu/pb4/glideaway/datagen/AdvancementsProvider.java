@@ -1,10 +1,8 @@
 package eu.pb4.glideaway.datagen;
 
 import eu.pb4.glideaway.entity.GliderEntity;
-import eu.pb4.glideaway.item.GlideItemTags;
 import eu.pb4.glideaway.item.GlideItems;
-import eu.pb4.glideaway.item.HangGliderItem;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -23,7 +21,7 @@ import java.util.function.Consumer;
 
 class AdvancementsProvider extends FabricAdvancementProvider {
 
-    protected AdvancementsProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    protected AdvancementsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 

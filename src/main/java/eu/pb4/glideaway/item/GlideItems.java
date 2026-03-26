@@ -1,9 +1,8 @@
 package eu.pb4.glideaway.item;
 
 import eu.pb4.glideaway.ModInit;
-import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
+import eu.pb4.polymer.core.api.item.PolymerCreativeModeTabUtils;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
@@ -13,7 +12,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -23,8 +21,6 @@ import net.minecraft.world.item.component.DyedItemColor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
-
-import static eu.pb4.glideaway.ModInit.id;
 
 public class GlideItems {
 
@@ -49,7 +45,7 @@ public class GlideItems {
     }
 
     public static void register() {
-        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.fromNamespaceAndPath(ModInit.ID, "a_group"), CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, -1)
+        PolymerCreativeModeTabUtils.registerPolymerCreativeModeTab(Identifier.fromNamespaceAndPath(ModInit.ID, "a_group"), CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, -1)
                 .icon(HANG_GLIDER::getDefaultInstance)
                 .title(Component.translatable("itemgroup." + ModInit.ID))
                 .displayItems(((context, entries) -> {
@@ -72,15 +68,6 @@ public class GlideItems {
         );
 
         UseEntityCallback.EVENT.register(WIND_IN_A_BOTTLE::useOnEntityEvent);
-
-        TradeOfferHelper.registerWanderingTraderOffers((b) -> {
-            b.pool(id("hang_gliders"), 1,
-                    new VillagerTrades.ItemsForEmeralds(GlideItems.AZALEA_HANG_GLIDER, 16, 1, 1, 5),
-                    new VillagerTrades.ItemsForEmeralds(GlideItems.CHERRY_HANG_GLIDER, 16, 1, 1, 5),
-                    new VillagerTrades.ItemsForEmeralds(GlideItems.SCULK_HANG_GLIDER, 16, 1, 1, 5),
-                    new VillagerTrades.ItemsForEmeralds(GlideItems.PHANTOM_HANG_GLIDER, 16, 1, 1, 5)
-            );
-        });
     }
 
     public static <T extends Item> T register(String path, Item.Properties settings, Function<Item.Properties, T> function) {

@@ -2,6 +2,8 @@ package eu.pb4.glideaway.item;
 
 import eu.pb4.glideaway.entity.GliderEntity;
 import eu.pb4.polymer.core.api.item.PolymerItem;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import xyz.nucleoid.packettweaker.PacketContext;
 
 import static eu.pb4.glideaway.ModInit.id;
 

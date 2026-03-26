@@ -3,6 +3,7 @@ package eu.pb4.glideaway.item;
 import eu.pb4.glideaway.entity.GliderEntity;
 import eu.pb4.glideaway.mixin.ServerGamePacketListenerImplAccessor;
 import eu.pb4.polymer.core.api.item.PolymerItem;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import xyz.nucleoid.packettweaker.PacketContext;
 
 public class WindInABottleItem extends Item implements PolymerItem {
     private final boolean consume;

@@ -2,16 +2,16 @@ package eu.pb4.glideaway.datagen;
 
 import eu.pb4.glideaway.item.GlideItemTags;
 import eu.pb4.glideaway.item.GlideItems;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-class ItemTagsProvider extends FabricTagProvider.ItemTagProvider {
-    public ItemTagsProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
+class ItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
+    public ItemTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, @Nullable FabricTagsProvider.BlockTagsProvider blockTagProvider) {
         super(output, registriesFuture, blockTagProvider);
     }
 
@@ -25,7 +25,7 @@ class ItemTagsProvider extends FabricTagProvider.ItemTagProvider {
                 .add(GlideItems.AZALEA_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER,
                         GlideItems.PHANTOM_HANG_GLIDER, GlideItems.TATER_HANG_GLIDER);
 
-        this.valueLookupBuilder(ItemTags.DYEABLE).add(GlideItems.HANG_GLIDER);
+        this.valueLookupBuilder(ItemTags.CAULDRON_CAN_REMOVE_DYE).add(GlideItems.HANG_GLIDER);
 
         this.valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);

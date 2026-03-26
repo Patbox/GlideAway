@@ -7,7 +7,7 @@ import eu.pb4.polymer.resourcepack.extras.api.format.item.ItemAsset;
 import eu.pb4.polymer.resourcepack.extras.api.format.item.model.BasicItemModel;
 import eu.pb4.polymer.resourcepack.extras.api.format.item.tint.ConstantTintSource;
 import eu.pb4.polymer.resourcepack.extras.api.format.item.tint.DyeTintSource;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -25,7 +25,7 @@ import static eu.pb4.glideaway.ModInit.id;
 class CustomAssetProvider implements DataProvider {
     private final PackOutput output;
 
-    public CustomAssetProvider(FabricDataOutput output) {
+    public CustomAssetProvider(FabricPackOutput output) {
         this.output = output;
     }
 

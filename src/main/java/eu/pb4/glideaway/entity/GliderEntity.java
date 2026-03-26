@@ -10,8 +10,9 @@ import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
 import eu.pb4.polymer.virtualentity.api.attachment.EntityAttachment;
+import eu.pb4.polymer.virtualentity.api.data.DisplayEntityData;
 import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
-import eu.pb4.polymer.virtualentity.api.tracker.DisplayTrackedData;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.DistanceTrigger;
 import net.minecraft.core.Direction;
@@ -40,6 +41,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -52,7 +54,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import xyz.nucleoid.packettweaker.PacketContext;
 
 import java.util.List;
 
@@ -187,7 +188,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
             if (this.getFirstPassenger() != null) {
                 this.getFirstPassenger().stopRiding();
             }
-            serverWorld.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, old), this.getX(), this.getY() + 0.5, this.getZ(), 80, 1, 1, 1, 0.1);
+            serverWorld.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(old)), this.getX(), this.getY() + 0.5, this.getZ(), 80, 1, 1, 1, 0.1);
             this.discard();
         });
     }
@@ -386,7 +387,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 pos) {
         if (this.getFirstPassenger() != null) {
             return InteractionResult.FAIL;
         }
@@ -413,18 +414,18 @@ public class GliderEntity extends Entity implements PolymerEntity {
     @Override
     public void modifyRawTrackedData(List<SynchedEntityData.DataValue<?>> data, ServerPlayer player, boolean initial) {
         if (initial) {
-            data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.TELEPORTATION_DURATION, 2));
-            data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.INTERPOLATION_DURATION, 3));
-            data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.Item.ITEM, this.modelStack));
-            data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.TRANSLATION, new Vector3f(0, 1.2f, -0.05f)));
-            data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.SCALE, new Vector3f(1.5f)));
+            data.add(SynchedEntityData.DataValue.create(DisplayEntityData.TELEPORTATION_DURATION, 2));
+            data.add(SynchedEntityData.DataValue.create(DisplayEntityData.INTERPOLATION_DURATION, 3));
+            data.add(SynchedEntityData.DataValue.create(DisplayEntityData.Item.ITEM, this.modelStack));
+            data.add(SynchedEntityData.DataValue.create(DisplayEntityData.TRANSLATION, new Vector3f(0, 1.2f, -0.05f)));
+            data.add(SynchedEntityData.DataValue.create(DisplayEntityData.SCALE, new Vector3f(1.5f)));
         }
 
         for (var entry : data.toArray(new SynchedEntityData.DataValue<?>[0])) {
             if (entry.id() == ROLL.id()) {
                 data.remove(entry);
-                data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.LEFT_ROTATION, new Quaternionf().rotateZ((Float) entry.value())));
-                data.add(SynchedEntityData.DataValue.create(DisplayTrackedData.START_INTERPOLATION, 0));
+                data.add(SynchedEntityData.DataValue.create(DisplayEntityData.LEFT_ROTATION, new Quaternionf().rotateZ((Float) entry.value())));
+                data.add(SynchedEntityData.DataValue.create(DisplayEntityData.START_INTERPOLATION, 0));
             }
         }
     }
