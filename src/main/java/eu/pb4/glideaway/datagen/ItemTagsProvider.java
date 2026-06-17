@@ -1,7 +1,7 @@
 package eu.pb4.glideaway.datagen;
 
 import eu.pb4.glideaway.item.GlideItemTags;
-import eu.pb4.glideaway.item.GlideItems;
+import eu.pb4.glideaway.item.GlideItemIds;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
@@ -17,23 +17,23 @@ class ItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        this.valueLookupBuilder(GlideItemTags.HANG_GLIDERS)
-                .add(GlideItems.HANG_GLIDER)
+        this.tag(GlideItemTags.HANG_GLIDERS)
+                .add(GlideItemIds.HANG_GLIDER)
                 .addOptionalTag(GlideItemTags.SPECIAL_HANG_GLIDERS);
 
-        this.valueLookupBuilder(GlideItemTags.SPECIAL_HANG_GLIDERS)
-                .add(GlideItems.AZALEA_HANG_GLIDER, GlideItems.CHERRY_HANG_GLIDER, GlideItems.SCULK_HANG_GLIDER,
-                        GlideItems.PHANTOM_HANG_GLIDER, GlideItems.TATER_HANG_GLIDER);
+        this.tag(GlideItemTags.SPECIAL_HANG_GLIDERS)
+                .add(GlideItemIds.AZALEA_HANG_GLIDER, GlideItemIds.CHERRY_HANG_GLIDER, GlideItemIds.SCULK_HANG_GLIDER,
+                        GlideItemIds.PHANTOM_HANG_GLIDER, GlideItemIds.TATER_HANG_GLIDER);
 
-        this.valueLookupBuilder(ItemTags.CAULDRON_CAN_REMOVE_DYE).add(GlideItems.HANG_GLIDER);
+        this.tag(ItemTags.CAULDRON_CAN_REMOVE_DYE).add(GlideItemIds.HANG_GLIDER);
 
-        this.valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE)
+        this.tag(ItemTags.DURABILITY_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
-        this.valueLookupBuilder(ItemTags.VANISHING_ENCHANTABLE)
+        this.tag(ItemTags.VANISHING_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
-        this.valueLookupBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE)
+        this.tag(ItemTags.EQUIPPABLE_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
-        this.valueLookupBuilder(GlideItemTags.GLIDER_ENCHANTABLE)
+        this.tag(GlideItemTags.GLIDER_ENCHANTABLE)
                 .addTag(GlideItemTags.HANG_GLIDERS);
     }
 }

@@ -2,7 +2,6 @@ package eu.pb4.glideaway.entity;
 
 import eu.pb4.glideaway.ModInit;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

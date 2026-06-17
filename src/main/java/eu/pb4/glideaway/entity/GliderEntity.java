@@ -13,13 +13,15 @@ import eu.pb4.polymer.virtualentity.api.attachment.EntityAttachment;
 import eu.pb4.polymer.virtualentity.api.data.DisplayEntityData;
 import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.criterion.DistanceTrigger;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.DistanceTrigger;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -32,13 +34,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -58,7 +54,7 @@ import org.joml.Vector3f;
 import java.util.List;
 
 public class GliderEntity extends Entity implements PolymerEntity {
-    public static final DistanceTrigger FLY_WITH_GLIDER = CriteriaTriggers.register("glideaway:fly_with_glider", new DistanceTrigger());
+    public static final DistanceTrigger FLY_WITH_GLIDER = Registry.register(BuiltInRegistries.TRIGGER_TYPES, "glideaway:fly_with_glider", new DistanceTrigger());
     private static final EntityDataAccessor<Float> ROLL = SynchedEntityData.defineId(GliderEntity.class, EntityDataSerializers.FLOAT);
     private ItemStack itemStack = GlideItems.HANG_GLIDER.getDefaultInstance();
     private ItemStack modelStack = GlideItems.HANG_GLIDER.getDefaultInstance();
@@ -408,7 +404,7 @@ public class GliderEntity extends Entity implements PolymerEntity {
 
     @Override
     public EntityType<?> getPolymerEntityType(PacketContext context) {
-        return EntityType.ITEM_DISPLAY;
+        return EntityTypes.ITEM_DISPLAY;
     }
 
     @Override
